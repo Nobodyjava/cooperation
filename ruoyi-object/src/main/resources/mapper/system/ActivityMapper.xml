@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ActivityMapper">
+
+    <resultMap type="Activity" id="ActivityResult">
+        <result property="activityId"    column="activity_id"    />
+        <result property="consultantId"    column="consultant_id"    />
+        <result property="shopperId"    column="shopper_id"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="activityTopic"    column="activity_topic"    />
+        <result property="begintime"    column="begintime"    />
+        <result property="endtime"    column="endtime"    />
+        <result property="activityCity"    column="activity_city"    />
+        <result property="leader"    column="leader"    />
+        <result property="goodsEndtime"    column="goods_endtime"    />
+        <result property="sharing"    column="sharing"    />
+        <result property="cards"    column="cards"    />
+        <result property="pic"    column="pic"    />
+        <result property="status"    column="status"    />
+        <result property="checkStatus"    column="check_status"    />
+    </resultMap>
+
+    <sql id="selectActivityVo">
+        select activity_id, consultant_id, shopper_id, goods_id, activity_topic, begintime, endtime, activity_city, leader, goods_endtime, sharing, cards, pic, status, check_status from activity
+    </sql>
+
+    <select id="selectActivityList" parameterType="Activity" resultMap="ActivityResult">
+        <include refid="selectActivityVo"/>
+        <where>
+            <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
+            <if test="shopperId != null "> and shopper_id = #{shopperId}</if>
+            <if test="goodsId != null "> and goods_id = #{goodsId}</if>
+            <if test="activityTopic != null  and activityTopic != ''"> and activity_topic = #{activityTopic}</if>
+            <if test="begintime != null "> and begintime = #{begintime}</if>
+            <if test="endtime != null "> and endtime = #{endtime}</if>
+            <if test="activityCity != null  and activityCity != ''"> and activity_city = #{activityCity}</if>
+            <if test="leader != null  and leader != ''"> and leader = #{leader}</if>
+            <if test="goodsEndtime != null "> and goods_endtime = #{goodsEndtime}</if>
+            <if test="sharing != null  and sharing != ''"> and sharing = #{sharing}</if>
+            <if test="cards != null  and cards != ''"> and cards = #{cards}</if>
+            <if test="pic != null  and pic != ''"> and pic = #{pic}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="checkStatus != null "> and check_status = #{checkStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectActivityByActivityId" parameterType="Long" resultMap="ActivityResult">
+        <include refid="selectActivityVo"/>
+        where activity_id = #{activityId}
+    </select>
+
+    <insert id="insertActivity" parameterType="Activity" useGeneratedKeys="true" keyProperty="activityId">
+        insert into activity (shopper_id,consultant_id,goods_id,activity_id,activity_topic,begintime,endtime,activity_city,leader,goods_endtime,sharing,cards,pic)
+        values(#{shopperId},#{consultantId},#{goodsId},#{activityId},#{activityTopic},#{begintime},#{endtime},#{activityCity},#{leader},#{goodsEndtime},#{sharing},#{cards},#{pic})
+    </insert>
+
+    <update id="updateActivity" parameterType="Activity">
+        update activity
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consultantId != null">consultant_id = #{consultantId},</if>
+            <if test="shopperId != null">shopper_id = #{shopperId},</if>
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="activityTopic != null">activity_topic = #{activityTopic},</if>
+            <if test="begintime != null">begintime = #{begintime},</if>
+            <if test="endtime != null">endtime = #{endtime},</if>
+            <if test="activityCity != null">activity_city = #{activityCity},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="goodsEndtime != null">goods_endtime = #{goodsEndtime},</if>
+            <if test="sharing != null">sharing = #{sharing},</if>
+            <if test="cards != null">cards = #{cards},</if>
+            <if test="pic != null">pic = #{pic},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="checkStatus != null">check_status = #{checkStatus},</if>
+        </trim>
+        where activity_id = #{activityId}
+    </update>
+
+    <delete id="deleteActivityByActivityId" parameterType="Long">
+        delete from activity where activity_id = #{activityId}
+    </delete>
+
+    <delete id="deleteActivityByActivityIds" parameterType="String">
+        delete from activity where activity_id in
+        <foreach item="activityId" collection="array" open="(" separator="," close=")">
+            #{activityId}
+        </foreach>
+    </delete>
+
+    <!-- 查询审核未通过的活动 -->
+    <select id="selectNoPassActivityList" parameterType="Activity" resultMap="ActivityResult">
+        <include refid="selectActivityVo"/>
+        where check_status = 1
+    </select>
+
+    <!-- 审核成功(修改成功过后的审核码) -->
+    <update id="updateSuccessActivityCheckStatus" parameterType="Activity">
+        update activity set check_status = 0 where shopper_id = #{shopperId} and activity_id = #{activityId}
+    </update>
+
+    <!-- 根据顾问id查询活动信息 -->
+    <select id="selectActivityByconsultantId" parameterType="Activity" resultMap="ActivityResult">
+        <include refid="selectActivityVo"/>
+        where consultant_id = #{consultantId}
+    </select>
+
+    <!-- 根据顾问id查询商家个数 -->
+    <select id="selectShopperNum" parameterType="Activity" resultType="int">
+        SELECT
+            COUNT(distinct shopper_id)
+        FROM
+            activity
+        WHERE
+            consultant_id = #{consultantId}
+    </select>
+
+    <!-- 根据顾问id查询活动数量 -->
+    <select id="selectActivityNum" parameterType="Activity" resultType="int">
+        SELECT
+            COUNT(distinct activity_id)
+        FROM
+            activity
+        WHERE
+            consultant_id = #{consultantId}
+    </select>
+
+</mapper>

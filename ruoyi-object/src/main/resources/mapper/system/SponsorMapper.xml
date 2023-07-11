@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SponsorMapper">
+    
+    <resultMap type="Sponsor" id="SponsorResult">
+        <id property="sponsorId"    column="sponsor_id"    />
+        <result property="topic"    column="topic"    />
+        <result property="pic"    column="pic"    />
+    </resultMap>
+
+    <sql id="selectSponsorVo">
+        select sponsor_id, topic, pic from sponsor
+    </sql>
+
+    <select id="selectSponsorList" parameterType="Sponsor" resultMap="SponsorResult">
+        <include refid="selectSponsorVo"/>
+        <where>  
+            <if test="topic != null  and topic != ''"> and topic = #{topic}</if>
+            <if test="pic != null  and pic != ''"> and pic = #{pic}</if>
+        </where>
+    </select>
+    
+    <select id="selectSponsorBySponsorId" parameterType="Long" resultMap="SponsorResult">
+        <include refid="selectSponsorVo"/>
+        where sponsor_id = #{sponsorId}
+    </select>
+        
+    <insert id="insertSponsor" parameterType="Sponsor" useGeneratedKeys="true" keyProperty="sponsorId">
+        insert into sponsor (topic,pic) values (#{topic},#{pic})
+    </insert>
+
+    <update id="updateSponsor" parameterType="Sponsor">
+        update sponsor
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="topic != null">topic = #{topic},</if>
+            <if test="pic != null">pic = #{pic},</if>
+        </trim>
+        where sponsor_id = #{sponsorId}
+    </update>
+
+    <delete id="deleteSponsorBySponsorId" parameterType="Long">
+        delete from sponsor where sponsor_id = #{sponsorId}
+    </delete>
+
+    <delete id="deleteSponsorBySponsorIds" parameterType="String">
+        delete from sponsor where sponsor_id in 
+        <foreach item="sponsorId" collection="array" open="(" separator="," close=")">
+            #{sponsorId}
+        </foreach>
+    </delete>
+</mapper>

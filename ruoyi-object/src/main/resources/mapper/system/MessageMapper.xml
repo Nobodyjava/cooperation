@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MessageMapper">
+    
+    <resultMap type="Message" id="MessageResult">
+        <result property="messageId"    column="message_id"    />
+        <result property="messageCity"    column="message_city"    />
+        <result property="messageLeader"    column="message_leader"    />
+    </resultMap>
+
+    <sql id="selectMessageVo">
+        select message_id, message_city, message_leader from message
+    </sql>
+
+    <select id="selectMessageList" parameterType="Message" resultMap="MessageResult">
+        <include refid="selectMessageVo"/>
+        <where>  
+            <if test="messageCity != null  and messageCity != ''"> and message_city = #{messageCity}</if>
+            <if test="messageLeader != null  and messageLeader != ''"> and message_leader = #{messageLeader}</if>
+        </where>
+    </select>
+    
+    <select id="selectMessageByMessageId" parameterType="String" resultMap="MessageResult">
+        <include refid="selectMessageVo"/>
+        where message_id = #{messageId}
+    </select>
+        
+    <insert id="insertMessage" parameterType="Message">
+        insert into message (message_city,message_leader)
+        values (#{messageCity},#{messageLeader})
+    </insert>
+
+    <update id="updateMessage" parameterType="Message">
+        update message
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="messageCity != null">message_city = #{messageCity},</if>
+            <if test="messageLeader != null">message_leader = #{messageLeader},</if>
+        </trim>
+        where message_id = #{messageId}
+    </update>
+
+    <delete id="deleteMessageByMessageId" parameterType="String">
+        delete from message where message_id = #{messageId}
+    </delete>
+
+    <delete id="deleteMessageByMessageIds" parameterType="String">
+        delete from message where message_id in 
+        <foreach item="messageId" collection="array" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BuildingMapper">
+    
+    <resultMap type="Building" id="BuildingResult">
+        <id property="buildingId"    column="building_id"    />
+        <result property="buildingName"    column="building_name"    />
+        <result property="buildingAd"    column="building_ad"    />
+        <result property="buildingPic"    column="building_pic"    />
+    </resultMap>
+
+    <sql id="selectBuildingVo">
+        select building_id, building_name, building_ad, building_pic from building
+    </sql>
+
+    <select id="selectBuildingList" parameterType="Building" resultMap="BuildingResult">
+        <include refid="selectBuildingVo"/>
+        <where>  
+            <if test="buildingName != null  and buildingName != ''"> and building_name like concat('%', #{buildingName}, '%')</if>
+            <if test="buildingAd != null  and buildingAd != ''"> and building_ad = #{buildingAd}</if>
+            <if test="buildingPic != null  and buildingPic != ''"> and building_pic = #{buildingPic}</if>
+        </where>
+    </select>
+    
+    <select id="selectBuildingByBuildingId" parameterType="Long" resultMap="BuildingResult">
+        <include refid="selectBuildingVo"/>
+        where building_id = #{buildingId}
+    </select>
+        
+    <insert id="insertBuilding" parameterType="Building" useGeneratedKeys="true" keyProperty="buildingId">
+        insert into building (building_name,building_ad,building_pic)
+        values (#{buildingName},#{buildingAd},#{buildingPic})
+    </insert>
+
+    <update id="updateBuilding" parameterType="Building">
+        update building
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="buildingName != null">building_name = #{buildingName},</if>
+            <if test="buildingAd != null">building_ad = #{buildingAd},</if>
+            <if test="buildingPic != null">building_pic = #{buildingPic},</if>
+        </trim>
+        where building_id = #{buildingId}
+    </update>
+
+    <delete id="deleteBuildingByBuildingId" parameterType="Long">
+        delete from building where building_id = #{buildingId}
+    </delete>
+
+    <delete id="deleteBuildingByBuildingIds" parameterType="String">
+        delete from building where building_id in 
+        <foreach item="buildingId" collection="array" open="(" separator="," close=")">
+            #{buildingId}
+        </foreach>
+    </delete>
+</mapper>

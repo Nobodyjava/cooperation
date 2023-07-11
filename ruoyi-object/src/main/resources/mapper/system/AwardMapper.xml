@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.AwardMapper">
+    
+    <resultMap type="Award" id="AwardResult">
+        <id property="awardId"    column="award_id"    />
+        <result property="awardTurn"    column="award_turn"    />
+        <result property="awardMoney"    column="award_money"    />
+        <result property="awardBean"    column="award_bean"    />
+    </resultMap>
+
+    <sql id="selectAwardVo">
+        select award_id, award_turn, award_money, award_bean from award
+    </sql>
+
+    <select id="selectAwardList" parameterType="Award" resultMap="AwardResult">
+        <include refid="selectAwardVo"/>
+        <where>  
+            <if test="awardTurn != null "> and award_turn = #{awardTurn}</if>
+            <if test="awardMoney != null "> and award_money = #{awardMoney}</if>
+            <if test="awardBean != null "> and award_bean = #{awardBean}</if>
+        </where>
+    </select>
+    
+    <select id="selectAwardByAwardId" parameterType="String" resultMap="AwardResult">
+        <include refid="selectAwardVo"/>
+        where award_id = #{awardId}
+    </select>
+        
+    <insert id="insertAward" parameterType="Award">
+        insert into award (award_turn,award_money,award_bean)
+        values (#{awardTurn},#{awardMoney},#{awardBean})
+    </insert>
+
+    <update id="updateAward" parameterType="Award">
+        update award
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="awardTurn != null">award_turn = #{awardTurn},</if>
+            <if test="awardMoney != null">award_money = #{awardMoney},</if>
+            <if test="awardBean != null">award_bean = #{awardBean},</if>
+        </trim>
+        where award_id = #{awardId}
+    </update>
+
+    <delete id="deleteAwardByAwardId" parameterType="String">
+        delete from award where award_id = #{awardId}
+    </delete>
+
+    <delete id="deleteAwardByAwardIds" parameterType="String">
+        delete from award where award_id in 
+        <foreach item="awardId" collection="array" open="(" separator="," close=")">
+            #{awardId}
+        </foreach>
+    </delete>
+</mapper>

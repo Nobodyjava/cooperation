@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.GoodsMapper">
+
+    <resultMap type="Goods" id="GoodsResult">
+        <id property="goodsId"    column="goods_id"    />
+        <result property="consultantId"    column="consultant_id"    />
+        <result property="goodsType"    column="goods_type"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="goodsLike"    column="goods_like"    />
+        <result property="img"    column="img"    />
+        <result property="goodsOriginalprice"    column="goods_originalprice"    />
+        <result property="goodsPrice"    column="goods_price"    />
+        <result property="goodsTotalnum"    column="goods_totalnum"    />
+        <result property="goodsClaimnum"    column="goods_claimnum"    />
+        <result property="goodsRemainnum"    column="goods_remainnum"    />
+        <result property="goodsLimit"    column="goods_limit"    />
+        <result property="usetime"    column="usetime"    />
+        <result property="fundays"    column="fundays"    />
+        <result property="endtime"    column="endtime"    />
+        <result property="discount"    column="discount"    />
+        <result property="priceStandard"    column="price_standard"    />
+        <result property="priceReduction"    column="price_reduction"    />
+        <result property="priceOff"    column="price_off"    />
+        <result property="goodsClaimstatus"    column="goods_claimstatus"    />
+    </resultMap>
+
+    <sql id="selectGoodsVo">
+        select goods_id, consultant_id, goods_type, goods_name, goods_like, img, goods_originalprice, goods_price, goods_totalnum, goods_claimnum, goods_remainnum, goods_limit, usetime, fundays, endtime, discount, price_standard, price_reduction, price_off, goods_claimstatus from goods
+    </sql>
+
+    <select id="selectGoodsList" parameterType="Goods" resultMap="GoodsResult">
+        <include refid="selectGoodsVo"/>
+        <where>
+            <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
+            <if test="goodsType != null  and goodsType != ''"> and goods_type = #{goodsType}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="goodsLike != null  and goodsLike != ''"> and goods_like = #{goodsLike}</if>
+            <if test="img != null  and img != ''"> and img = #{img}</if>
+            <if test="goodsOriginalprice != null "> and goods_originalprice = #{goodsOriginalprice}</if>
+            <if test="goodsPrice != null "> and goods_price = #{goodsPrice}</if>
+            <if test="goodsTotalnum != null "> and goods_totalnum = #{goodsTotalnum}</if>
+            <if test="goodsClaimnum != null "> and goods_claimnum = #{goodsClaimnum}</if>
+            <if test="goodsRemainnum != null "> and goods_remainnum = #{goodsRemainnum}</if>
+            <if test="goodsLimit != null  and goodsLimit != ''"> and goods_limit = #{goodsLimit}</if>
+            <if test="usetime != null "> and usetime = #{usetime}</if>
+            <if test="fundays != null "> and fundays = #{fundays}</if>
+            <if test="endtime != null "> and endtime = #{endtime}</if>
+            <if test="discount != null "> and discount = #{discount}</if>
+            <if test="priceStandard != null "> and price_standard = #{priceStandard}</if>
+            <if test="priceReduction != null "> and price_reduction = #{priceReduction}</if>
+            <if test="priceOff != null "> and price_off = #{priceOff}</if>
+            <if test="goodsClaimstatus != null "> and goods_claimstatus = #{goodsClaimstatus}</if>
+        </where>
+    </select>
+
+    <select id="selectGoodsByGoodsId" parameterType="Long" resultMap="GoodsResult">
+        <include refid="selectGoodsVo"/>
+        where goods_id = #{goodsId}
+    </select>
+
+    <insert id="insertGoods" parameterType="Goods" useGeneratedKeys="true" keyProperty="goodsId">
+        insert into goods (consultant_id,goods_type,goods_name,goods_like,img,goods_originalprice,goods_price,goods_totalnum,goods_claimnum,goods_remainnum,goods_limit,usetime,fundays,endtime,discount,price_standard,price_reduction,price_off,goods_claimstatus)
+        values(#{consultantId},#{goodsType},#{goodsName},#{goodsLike},#{img},#{goodsOriginalprice},#{goodsPrice},#{goodsTotalnum},#{goodsClaimnum},#{goodsRemainnum},#{goodsLimit},#{usetime},#{fundays},#{endtime},#{discount},#{priceStandard},#{priceReduction},#{priceOff},#{goodsClaimstatus})
+    </insert>
+
+    <update id="updateGoods" parameterType="Goods">
+        update goods
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consultantId != null">consultant_id = #{consultantId},</if>
+            <if test="goodsType != null">goods_type = #{goodsType},</if>
+            <if test="goodsName != null">goods_name = #{goodsName},</if>
+            <if test="goodsLike != null">goods_like = #{goodsLike},</if>
+            <if test="img != null">img = #{img},</if>
+            <if test="goodsOriginalprice != null">goods_originalprice = #{goodsOriginalprice},</if>
+            <if test="goodsPrice != null">goods_price = #{goodsPrice},</if>
+            <if test="goodsTotalnum != null">goods_totalnum = #{goodsTotalnum},</if>
+            <if test="goodsClaimnum != null">goods_claimnum = #{goodsClaimnum},</if>
+            <if test="goodsRemainnum != null">goods_remainnum = #{goodsRemainnum},</if>
+            <if test="goodsLimit != null">goods_limit = #{goodsLimit},</if>
+            <if test="usetime != null">usetime = #{usetime},</if>
+            <if test="fundays != null">fundays = #{fundays},</if>
+            <if test="endtime != null">endtime = #{endtime},</if>
+            <if test="discount != null">discount = #{discount},</if>
+            <if test="priceStandard != null">price_standard = #{priceStandard},</if>
+            <if test="priceReduction != null">price_reduction = #{priceReduction},</if>
+            <if test="priceOff != null">price_off = #{priceOff},</if>
+            <if test="goodsClaimstatus != null">goods_claimstatus = #{goodsClaimstatus},</if>
+        </trim>
+        where goods_id = #{goodsId}
+    </update>
+
+    <delete id="deleteGoodsByGoodsId" parameterType="Long">
+        delete from goods where goods_id = #{goodsId}
+    </delete>
+
+    <delete id="deleteGoodsByGoodsIds" parameterType="String">
+        delete from goods where goods_id in
+        <foreach item="goodsId" collection="array" open="(" separator="," close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+
+    <!-- 根据顾问id查询商品信息 -->
+    <select id="selectGoodsByConsultantId" parameterType="Long" resultMap="GoodsResult">
+        <include refid="selectGoodsVo"/>
+        where consultant_id = #{consultantId}
+    </select>
+
+    <!-- 根据商品id修改截止核销时间 -->
+    <update id="updateGoodsEndtime" parameterType="Goods">
+        UPDATE goods g,activity a
+        SET
+        g.endtime = DATE_ADD( a.endtime, INTERVAL g.fundays DAY )
+        WHERE
+	    a.goods_id = g.goods_id
+	    AND
+	    g.goods_id = #{goodsId};
+    </update>
+</mapper>

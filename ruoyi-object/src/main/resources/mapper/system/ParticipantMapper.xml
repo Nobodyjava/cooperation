@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ParticipantMapper">
+
+    <resultMap type="Participant" id="ParticipantResult">
+        <result property="participantId"    column="participant_id"    />
+        <result property="participantName"    column="participant_name"    />
+        <result property="participantPhone"    column="participant_phone"    />
+        <result property="participantPassword"    column="participant_password"    />
+        <result property="participantIp"    column="participant_ip"    />
+        <result property="participantLike"    column="participant_like"    />
+    </resultMap>
+
+    <sql id="selectParticipantVo">
+        select participant_id, participant_name, participant_phone, participant_password, participant_ip, participant_like from participant
+    </sql>
+
+    <select id="selectParticipantList" parameterType="Participant" resultMap="ParticipantResult">
+        <include refid="selectParticipantVo"/>
+        <where>
+            <if test="participantName != null  and participantName != ''"> and participant_name like concat('%', #{participantName}, '%')</if>
+            <if test="participantPhone != null  and participantPhone != ''"> and participant_phone = #{participantPhone}</if>
+            <if test="participantPassword != null  and participantPassword != ''"> and participant_password = #{participantPassword}</if>
+            <if test="participantIp != null  and participantIp != ''"> and participant_ip = #{participantIp}</if>
+            <if test="participantLike != null "> and participant_like = #{participantLike}</if>
+        </where>
+    </select>
+
+    <select id="selectParticipantByParticipantId" parameterType="Long" resultMap="ParticipantResult">
+        <include refid="selectParticipantVo"/>
+        where participant_id = #{participantId}
+    </select>
+
+    <insert id="insertParticipant" parameterType="Participant" useGeneratedKeys="true" keyProperty="participantId">
+        insert into participant (participant_name,participant_phone,participant_password,participant_like)
+        values (#{participantName},#{participantPhone},#{participantPassword},#{participantIp},#{participantLike})
+    </insert>
+
+    <update id="updateParticipant" parameterType="Participant">
+        update participant
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="participantName != null">participant_name = #{participantName},</if>
+            <if test="participantPhone != null">participant_phone = #{participantPhone},</if>
+            <if test="participantPassword != null">participant_password = #{participantPassword},</if>
+            <if test="participantIp != null">participant_ip = #{participantIp},</if>
+            <if test="participantLike != null">participant_like = #{participantLike},</if>
+        </trim>
+        where participant_id = #{participantId}
+    </update>
+
+    <delete id="deleteParticipantByParticipantId" parameterType="Long">
+        delete from participant where participant_id = #{participantId}
+    </delete>
+
+    <delete id="deleteParticipantByParticipantIds" parameterType="String">
+        delete from participant where participant_id in
+        <foreach item="participantId" collection="array" open="(" separator="," close=")">
+            #{participantId}
+        </foreach>
+    </delete>
+</mapper>

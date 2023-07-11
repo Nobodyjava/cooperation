@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ClaimMapper">
+    
+    <resultMap type="Claim" id="ClaimResult">
+        <id property="claimId"    column="claim_id"    />
+        <result property="openId"       column="openId"     />
+<!--        <result property="openid"    column="openId"    />-->
+        <result property="activityId"    column="activity_id"    />
+        <result property="discountId"    column="discount_id"    />
+    </resultMap>
+
+    <sql id="selectClaimVo">
+        select claim_id, openId, activity_id, discount_id from claim
+    </sql>
+
+    <select id="selectClaimList" parameterType="Claim" resultMap="ClaimResult">
+        <include refid="selectClaimVo"/>
+        <where>  
+            <if test="openId != null "> and openId = #{openId}</if>
+            <if test="activityId != null "> and activity_id = #{activityId}</if>
+            <if test="discountId != null "> and discount_id = #{discountId}</if>
+        </where>
+    </select>
+    
+    <select id="selectClaimByClaimId" parameterType="Long" resultMap="ClaimResult">
+        <include refid="selectClaimVo"/>
+        where claim_id = #{claimId}
+    </select>
+        
+    <insert id="insertClaim" parameterType="Claim" useGeneratedKeys="true" keyProperty="claimId">
+        insert into claim
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="openId != null">openId,</if>
+            <if test="activityId != null">activity_id,</if>
+            <if test="discountId != null">discount_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="openId != null">#{openId},</if>
+            <if test="activityId != null">#{activityId},</if>
+            <if test="discountId != null">#{discountId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateClaim" parameterType="Claim">
+        update claim
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="openId != null">openId = #{openId},</if>
+            <if test="activityId != null">activity_id = #{activityId},</if>
+            <if test="discountId != null">discount_id = #{discountId},</if>
+        </trim>
+        where claim_id = #{claimId}
+    </update>
+
+    <delete id="deleteClaimByClaimId" parameterType="Long">
+        delete from claim where claim_id = #{claimId}
+    </delete>
+
+    <delete id="deleteClaimByClaimIds" parameterType="String">
+        delete from claim where claim_id in 
+        <foreach item="claimId" collection="array" open="(" separator="," close=")">
+            #{claimId}
+        </foreach>
+    </delete>
+
+    <!-- 根据openId和活动id查询优惠券信息 -->
+    <select id="selectMsg" parameterType="claim">
+        SELECT
+            discount_id
+        FROM
+            claim
+        WHERE
+            openId = #{openId}
+          AND activity_id = #{activityId};
+    </select>
+</mapper>

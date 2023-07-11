@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ConsultantMapper">
+
+    <resultMap type="Consultant" id="ConsultantResult">
+        <result property="consultantId"    column="consultant_id"    />
+        <result property="shopperId"    column="shopper_id"    />
+        <result property="activityId"    column="activity_id"    />
+        <result property="consultantToken"    column="consultant_token"    />
+        <result property="consultantName"    column="consultant_name"    />
+        <result property="consultantPhone"    column="consultant_phone"    />
+        <result property="project"    column="project"    />
+        <result property="consultantPassword"    column="consultant_password"    />
+    </resultMap>
+
+    <sql id="selectConsultantVo">
+        select consultant_id, shopper_id, activity_id, consultant_token, consultant_name, consultant_phone, project, consultant_password from consultant
+    </sql>
+
+    <select id="selectConsultantList" parameterType="Consultant" resultMap="ConsultantResult">
+        <include refid="selectConsultantVo"/>
+        <where>
+            <if test="shopperId != null "> and shopper_id = #{shopperId}</if>
+            <if test="activityId != null "> and activity_id = #{activityId}</if>
+            <if test="consultantToken != null  and consultantToken != ''"> and consultant_token = #{consultantToken}</if>
+            <if test="consultantName != null  and consultantName != ''"> and consultant_name like concat('%', #{consultantName}, '%')</if>
+            <if test="consultantPhone != null  and consultantPhone != ''"> and consultant_phone = #{consultantPhone}</if>
+            <if test="project != null  and project != ''"> and project = #{project}</if>
+            <if test="consultantPassword != null  and consultantPassword != ''"> and consultant_password = #{consultantPassword}</if>
+        </where>
+    </select>
+
+    <select id="selectConsultantByConsultantId" parameterType="Long" resultMap="ConsultantResult">
+        <include refid="selectConsultantVo"/>
+        where consultant_id = #{consultantId}
+    </select>
+
+    <insert id="insertConsultant" parameterType="Consultant" useGeneratedKeys="true" keyProperty="consultantId">
+        insert into consultant (shopper_id,activity_id,consultant_token,consultant_name,consultant_phone,project,consultant_password)
+        values (#{shopperId},#{activityId},#{consultantToken},#{consultantName},#{consultantPhone},#{project},#{consultantPassword})
+    </insert>
+
+    <update id="updateConsultant" parameterType="Consultant">
+        update consultant
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shopperId != null">shopper_id = #{shopperId},</if>
+            <if test="activityId != null">activity_id = #{activityId},</if>
+            <if test="consultantToken != null">consultant_token = #{consultantToken},</if>
+            <if test="consultantName != null">consultant_name = #{consultantName},</if>
+            <if test="consultantPhone != null">consultant_phone = #{consultantPhone},</if>
+            <if test="project != null">project = #{project},</if>
+            <if test="consultantPassword != null">consultant_password = #{consultantPassword},</if>
+        </trim>
+        where consultant_id = #{consultantId}
+    </update>
+
+    <delete id="deleteConsultantByConsultantId" parameterType="Long">
+        delete from consultant where consultant_id = #{consultantId}
+    </delete>
+
+    <delete id="deleteConsultantByConsultantIds" parameterType="String">
+        delete from consultant where consultant_id in
+        <foreach item="consultantId" collection="array" open="(" separator="," close=")">
+            #{consultantId}
+        </foreach>
+    </delete>
+
+    <!-- 根据顾问手机号查询顾问信息 -->
+    <select id="selectConsultantByConsultantPhone" parameterType="String" resultMap="ConsultantResult">
+        <include refid="selectConsultantVo" />
+        where consultant_phone = #{consultantPhone}
+    </select>
+
+    <!-- 审核人根据活动id修改活动审核码状态 -->
+    <update id="updateActivityCheckStatus" parameterType="Long">
+        UPDATE activity a,
+            consultant c
+        SET a.check_status = 0
+        WHERE
+            a.activity_id = c.activity_id
+        AND a.activity_id = #{activityId};
+    </update>
+
+    <!-- 审核人根据商家id修改商家审核码状态 -->
+    <update id="updateShopperCheckStatus" parameterType="Long">
+        UPDATE shopper s,
+            consultant c
+        SET s.check_status = 0
+        WHERE
+            s.shopper_id = c.shopper_id
+        AND s.shopper_id = #{shopperId}
+    </update>
+</mapper>

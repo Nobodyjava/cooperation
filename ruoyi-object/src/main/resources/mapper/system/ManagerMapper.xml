@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ManagerMapper">
+
+    <resultMap type="Manager" id="ManagerResult">
+        <id property="managerId"    column="manager_id"    />
+        <result property="managerName"    column="manager_name"    />
+        <result property="managerPhone"    column="manager_phone"    />
+        <result property="managerPassword"    column="manager_password"    />
+        <result property="activityId"    column="activity_id"    />
+        <result property="errorMsg"    column="errorMsg"    />
+    </resultMap>
+
+    <!-- 商家映射 -->
+    <resultMap id="shopperResult" type="Shopper">
+        <id property="shopperId" column="shopper_id" />
+        <result property="project"    column="project"    />
+        <result property="shopperName"    column="shopper_name"    />
+        <result property="shopperType"    column="shopper_type"    />
+        <result property="account"    column="account"    />
+        <result property="shopperPhone"    column="shopper_phone"    />
+        <result property="shopperAddress"    column="shopper_address"    />
+        <result property="shopperHousenumber"    column="shopper_houseNumber"    />
+        <result property="status"    column="status"    />
+        <result property="img"    column="img"    />
+        <result property="checkStatus"    column="check_status"    />
+    </resultMap>
+
+    <!-- 活动映射 -->
+    <resultMap id="activityResult" type="activity">
+        <result property="activityId"    column="activity_id"    />
+        <result property="shopperId"    column="shopper_id"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="activityTopic"    column="activity_topic"    />
+        <result property="begintime"    column="begintime"    />
+        <result property="endtime"    column="endtime"    />
+        <result property="activityCity"    column="activity_city"    />
+        <result property="goodsEndtime"    column="goods_endtime"    />
+        <result property="sharing"    column="sharing"    />
+        <result property="cards"    column="cards"    />
+        <result property="pic"    column="pic"    />
+        <result property="checkStatus"    column="check_status"    />
+    </resultMap>
+
+    <sql id="selectManagerVo">
+        select manager_id, manager_name, manager_phone, manager_password, activity_id, errorMsg from manager
+    </sql>
+
+    <select id="selectManagerList" parameterType="Manager" resultMap="ManagerResult">
+        <include refid="selectManagerVo"/>
+        <where>
+            <if test="managerName != null  and managerName != ''"> and manager_name like concat('%', #{managerName}, '%')</if>
+            <if test="managerPhone != null  and managerPhone != ''"> and manager_phone = #{managerPhone}</if>
+            <if test="managerPassword != null  and managerPassword != ''"> and manager_password = #{managerPassword}</if>
+            <if test="activityId != null "> and activity_id = #{activityId}</if>
+            <if test="errorMsg != null  and errorMsg != ''"> and errorMsg = #{errorMsg}</if>
+        </where>
+    </select>
+
+    <select id="selectManagerByManagerId" parameterType="Long" resultMap="ManagerResult">
+        <include refid="selectManagerVo"/>
+        where manager_id = #{managerId}
+    </select>
+
+    <insert id="insertManager" parameterType="Manager" useGeneratedKeys="true" keyProperty="managerId">
+        insert into manager (manager_name,manager_phone,manager_password,activity_id,errorMsg)
+        values (#{managerName},#{managerPhone},#{managerPassword},#{activityId},#{errorMsg})
+    </insert>
+
+    <update id="updateManager" parameterType="Manager">
+        update manager
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="managerName != null">manager_name = #{managerName},</if>
+            <if test="managerPhone != null">manager_phone = #{managerPhone},</if>
+            <if test="managerPassword != null">manager_password = #{managerPassword},</if>
+            <if test="activityId != null">activity_id = #{activityId},</if>
+            <if test="errorMsg != null">errorMsg = #{errorMsg},</if>
+        </trim>
+        where manager_id = #{managerId}
+    </update>
+
+    <delete id="deleteManagerByManagerId" parameterType="Long">
+        delete from manager where manager_id = #{managerId}
+    </delete>
+
+    <delete id="deleteManagerByManagerIds" parameterType="String">
+        delete from manager where manager_id in
+        <foreach item="managerId" collection="array" open="(" separator="," close=")">
+            #{managerId}
+        </foreach>
+    </delete>
+
+    <!-- 根据商家id修改商家和任务详情的审核码 -->
+    <update id="updateCheckStatus" parameterType="Long">
+        UPDATE shopper s,activity a
+        SET s.check_status = 1,a.check_status = 1
+        WHERE
+            s.shopper_id = a.shopper_id
+          AND
+            s.shopper_id = #{shopperId};
+    </update>
+
+    <!-- 根据审核人手机号查询审核人信息 -->
+    <select id="selectManagerByManagerPhone" parameterType="String" resultMap="ManagerResult">
+        <include refid="selectManagerVo"/>
+        where manager_phone = #{managerPhone}
+    </select>
+
+</mapper>

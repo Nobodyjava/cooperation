@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ShopperMapper">
+
+    <resultMap type="Shopper" id="ShopperResult">
+        <id property="shopperId"    column="shopper_id"    />
+        <result property="consultantId"    column="consultant_id"    />
+        <result property="shopperName"    column="shopper_name"    />
+        <result property="shopperType"    column="shopper_type"    />
+        <result property="account"    column="account"    />
+        <result property="validatedAccount"    column="validated_account"    />
+        <result property="shopperGain"    column="shopper_gain"    />
+        <result property="project"    column="project"    />
+        <result property="shopperPhone"    column="shopper_phone"    />
+        <result property="shopperAddress"    column="shopper_address"    />
+        <result property="shopperHousenumber"    column="shopper_houseNumber"    />
+        <result property="status"    column="status"    />
+        <result property="branchAddress"    column="branch_address"    />
+        <result property="img"    column="img"    />
+        <result property="checkStatus"    column="check_status"    />
+    </resultMap>
+
+    <sql id="selectShopperVo">
+        select shopper_id, consultant_id, shopper_name, shopper_type, account, validated_account, shopper_gain, project, shopper_phone, shopper_address, shopper_houseNumber, status, branch_address, img, check_status from shopper
+    </sql>
+
+    <select id="selectShopperList" parameterType="Shopper" resultMap="ShopperResult">
+        <include refid="selectShopperVo"/>
+        <where>
+            <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
+            <if test="shopperName != null  and shopperName != ''"> and shopper_name like concat('%', #{shopperName}, '%')</if>
+            <if test="shopperType != null  and shopperType != ''"> and shopper_type = #{shopperType}</if>
+            <if test="account != null  and account != ''"> and account = #{account}</if>
+            <if test="validatedAccount != null  and validatedAccount != ''"> and validated_account = #{validatedAccount}</if>
+            <if test="shopperGain != null "> and shopper_gain = #{shopperGain}</if>
+            <if test="project != null  and project != ''"> and project = #{project}</if>
+            <if test="shopperPhone != null  and shopperPhone != ''"> and shopper_phone = #{shopperPhone}</if>
+            <if test="shopperAddress != null  and shopperAddress != ''"> and shopper_address = #{shopperAddress}</if>
+            <if test="shopperHousenumber != null  and shopperHousenumber != ''"> and shopper_houseNumber = #{shopperHousenumber}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="branchAddress != null  and branchAddress != ''"> and branch_address = #{branchAddress}</if>
+            <if test="img != null  and img != ''"> and img = #{img}</if>
+            <if test="checkStatus != null "> and check_status = #{checkStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectShopperByShopperId" parameterType="Long" resultMap="ShopperResult">
+        <include refid="selectShopperVo"/>
+        where shopper_id = #{shopperId}
+    </select>
+
+    <insert id="insertShopper" parameterType="Shopper" useGeneratedKeys="true" keyProperty="shopperId">
+        insert into shopper (consultant_id,shopper_name,shopper_type,account,validated_account,shopper_gain,project,shopper_phone,shopper_address,shopper_houseNumber,status,branch_address,img)
+        values(#{consultantId},#{shopperName},#{shopperType},#{account},#{validatedAccount},#{shopperGain},#{project},#{shopperPhone},#{shopperAddress},#{shopperHousenumber},#{status},#{branchAddress},#{img})
+    </insert>
+
+    <update id="updateShopper" parameterType="Shopper">
+        update shopper
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consultantId != null">consultant_id = #{consultantId},</if>
+            <if test="shopperName != null">shopper_name = #{shopperName},</if>
+            <if test="shopperType != null">shopper_type = #{shopperType},</if>
+            <if test="account != null">account = #{account},</if>
+            <if test="validatedAccount != null">validated_account = #{validatedAccount},</if>
+            <if test="shopperGain != null">shopper_gain = #{shopperGain},</if>
+            <if test="project != null">project = #{project},</if>
+            <if test="shopperPhone != null">shopper_phone = #{shopperPhone},</if>
+            <if test="shopperAddress != null">shopper_address = #{shopperAddress},</if>
+            <if test="shopperHousenumber != null">shopper_houseNumber = #{shopperHousenumber},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="branchAddress != null">branch_address = #{branchAddress},</if>
+            <if test="img != null">img = #{img},</if>
+            <if test="checkStatus != null">check_status = #{checkStatus},</if>
+        </trim>
+        where shopper_id = #{shopperId}
+    </update>
+
+    <delete id="deleteShopperByShopperId" parameterType="Long">
+        delete from shopper where shopper_id = #{shopperId}
+    </delete>
+
+    <delete id="deleteShopperByShopperIds" parameterType="String">
+        delete from shopper where shopper_id in
+        <foreach item="shopperId" collection="array" open="(" separator="," close=")">
+            #{shopperId}
+        </foreach>
+    </delete>
+
+    <!-- 根据商家id修改商家审核码 -->
+    <update id="updateShopperCheckStatus" parameterType="Shopper">
+        update shopper set check_status = 1 where shopper_id = #{shopperId}
+    </update>
+
+    <!-- 根据顾问id查询商家信息 -->
+    <select id="selectShopperByConsultantId" parameterType="Long" resultMap="ShopperResult">
+        <include refid="selectShopperVo"/>
+        where consultant_id = #{consultantId}
+    </select>
+
+    <!-- 提现(根据顾问id修改商家总收益为0) -->
+    <update id="updateShopperGainByConsultantId" parameterType="Shopper">
+        update shopper set shopper_gain = 0 where consultant_id = #{consultantId}
+    </update>
+
+</mapper>

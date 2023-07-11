@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ForwardMapper">
+    
+    <resultMap type="Forward" id="ForwardResult">
+        <id property="forwardId"    column="forward_id"    />
+        <result property="consultantId"    column="consultant_id"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="activityId"    column="activity_id"    />
+        <result property="openId"    column="open_id"    />
+        <result property="helpCount"    column="help_count"    />
+        <result property="status"   column="status"     />
+    </resultMap>
+
+    <sql id="selectForwardVo">
+        select forward_id, consultant_id, goods_id, activity_id, open_id, help_count, status from forward
+    </sql>
+
+    <select id="selectForwardList" parameterType="Forward" resultMap="ForwardResult">
+        <include refid="selectForwardVo"/>
+        <where>  
+            <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
+            <if test="goodsId != null "> and goods_id = #{goodsId}</if>
+            <if test="activityId != null "> and activity_id = #{activityId}</if>
+            <if test="openId != null "> and open_id = #{openId}</if>
+            <if test="helpCount != null "> and help_count = #{helpCount}</if>
+        </where>
+    </select>
+    
+    <select id="selectForwardByForwardId" parameterType="Long" resultMap="ForwardResult">
+        <include refid="selectForwardVo"/>
+        where forward_id = #{forwardId}
+    </select>
+        
+    <insert id="insertForward" parameterType="Forward" useGeneratedKeys="true" keyProperty="forwardId">
+        insert into forward (consultant_id,goods_id,activity_id,open_id)
+        values (#{consultantId},#{goodsId},#{activityId},#{openId})
+    </insert>
+
+    <update id="updateForward" parameterType="Forward">
+        update forward
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consultantId != null">consultant_id = #{consultantId},</if>
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="activityId != null">activity_id = #{activityId},</if>
+            <if test="openId != null">open_id = #{openId},</if>
+            <if test="helpCount != null">help_count = #{helpCount},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where forward_id = #{forwardId}
+    </update>
+
+    <delete id="deleteForwardByForwardId" parameterType="Long">
+        delete from forward where forward_id = #{forwardId}
+    </delete>
+
+    <delete id="deleteForwardByForwardIds" parameterType="String">
+        delete from forward where forward_id in 
+        <foreach item="forwardId" collection="array" open="(" separator="," close=")">
+            #{forwardId}
+        </foreach>
+    </delete>
+
+    <update id="updateHelpCount" parameterType="Forward">
+        update forward set help_count = help_count + 1 where activity_id = #{activityId} and open_id = #{openId}
+    </update>
+
+    <!-- 根据活动id和openid修改核销码状态 -->
+    <update id="updateStatus" parameterType="forward">
+        UPDATE forward
+        set status = 1
+        WHERE activity_id = #{activityId}
+        AND open_id = #{openId}
+    </update>
+
+    <!-- 根据活动id和openid查询转发集赞信息 -->
+    <select id="selectForwardMsg" parameterType="Forward" resultMap="ForwardResult">
+        <include refid="selectForwardVo"/>
+        where activity_id = #{activityId}
+        and open_id = #{openId}
+    </select>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.AnalysisMapper">
+    
+    <resultMap type="Analysis" id="AnalysisResult">
+        <id property="analyseId"    column="analyse_id"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="redeemed"    column="redeemed"    />
+        <result property="writtenOff"    column="written_off"    />
+        <result property="wait"    column="wait"    />
+        <result property="money"    column="money"    />
+    </resultMap>
+
+    <sql id="selectAnalysisVo">
+        select analyse_id, goods_id, goods_name, redeemed, written_off, wait, money from analysis
+    </sql>
+
+    <select id="selectAnalysisList" parameterType="Analysis" resultMap="AnalysisResult">
+        <include refid="selectAnalysisVo"/>
+        <where>  
+            <if test="goodsId != null  and goodsId != ''"> and goods_id = #{goodsId}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="redeemed != null "> and redeemed = #{redeemed}</if>
+            <if test="writtenOff != null "> and written_off = #{writtenOff}</if>
+            <if test="wait != null "> and wait = #{wait}</if>
+            <if test="money != null "> and money = #{money}</if>
+        </where>
+    </select>
+    
+    <select id="selectAnalysisByAnalyseId" parameterType="Long" resultMap="AnalysisResult">
+        <include refid="selectAnalysisVo"/>
+        where analyse_id = #{analyseId}
+    </select>
+        
+    <insert id="insertAnalysis" parameterType="Analysis">
+        insert into analysis (goods_id,goods_name,redeemed,written_off,wait,money)
+        values (#{goodsId},#{goodsName},#{redeemed},#{writtenOff},#{wait},#{money})
+    </insert>
+
+    <update id="updateAnalysis" parameterType="Analysis">
+        update analysis
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="goodsName != null">goods_name = #{goodsName},</if>
+            <if test="redeemed != null">redeemed = #{redeemed},</if>
+            <if test="writtenOff != null">written_off = #{writtenOff},</if>
+            <if test="wait != null">wait = #{wait},</if>
+            <if test="money != null">money = #{money},</if>
+        </trim>
+        where analyse_id = #{analyseId}
+    </update>
+
+    <delete id="deleteAnalysisByAnalyseId" parameterType="Long">
+        delete from analysis where analyse_id = #{analyseId}
+    </delete>
+
+    <delete id="deleteAnalysisByAnalyseIds" parameterType="Long">
+        delete from analysis where analyse_id in 
+        <foreach item="analyseId" collection="array" open="(" separator="," close=")">
+            #{analyseId}
+        </foreach>
+    </delete>
+</mapper>

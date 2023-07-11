@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.DiscountMapper">
+    
+    <resultMap type="Discount" id="DiscountResult">
+        <id property="discountId"    column="discount_id"    />
+        <result property="discountType"    column="discount_type"    />
+        <result property="discountName"    column="discount_name"    />
+    </resultMap>
+
+    <sql id="selectDiscountVo">
+        select discount_id, discount_type, discount_name from discount
+    </sql>
+
+    <select id="selectDiscountList" parameterType="Discount" resultMap="DiscountResult">
+        <include refid="selectDiscountVo"/>
+        <where>  
+            <if test="discountType != null  and discountType != ''"> and discount_type = #{discountType}</if>
+            <if test="discountName != null  and discountName != ''"> and discount_name like concat('%', #{discountName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDiscountByDiscountId" parameterType="Long" resultMap="DiscountResult">
+        <include refid="selectDiscountVo"/>
+        where discount_id = #{discountId}
+    </select>
+        
+    <insert id="insertDiscount" parameterType="Discount">
+        insert into discount (discount_type,discount_name)
+        values (#{discountType},#{discountName})
+    </insert>
+
+    <update id="updateDiscount" parameterType="Discount">
+        update discount
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="discountType != null">discount_type = #{discountType},</if>
+            <if test="discountName != null">discount_name = #{discountName},</if>
+        </trim>
+        where discount_id = #{discountId}
+    </update>
+
+    <delete id="deleteDiscountByDiscountId" parameterType="Long">
+        delete from discount where discount_id = #{discountId}
+    </delete>
+
+    <delete id="deleteDiscountByDiscountIds" parameterType="Long">
+        delete from discount where discount_id in 
+        <foreach item="discountId" collection="array" open="(" separator="," close=")">
+            #{discountId}
+        </foreach>
+    </delete>
+
+</mapper>
