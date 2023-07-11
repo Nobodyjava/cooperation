@@ -7,9 +7,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="Claim" id="ClaimResult">
         <id property="claimId"    column="claim_id"    />
         <result property="openId"       column="openId"     />
-<!--        <result property="openid"    column="openId"    />-->
         <result property="activityId"    column="activity_id"    />
         <result property="discountId"    column="discount_id"    />
+    </resultMap>
+
+    <resultMap type="Discount" id="DiscountResult">
+        <id property="discountId"    column="discount_id"    />
+        <result property="discountType"    column="discount_type"    />
+        <result property="discountName"    column="discount_name"    />
     </resultMap>
 
     <sql id="selectClaimVo">
@@ -66,7 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <!-- 根据openId和活动id查询优惠券信息 -->
-    <select id="selectMsg" parameterType="claim">
+    <select id="selectMsg" parameterType="Claim" resultMap="DiscountResult">
         SELECT
 	    d.discount_id,d.discount_type,d.discount_name
         FROM
