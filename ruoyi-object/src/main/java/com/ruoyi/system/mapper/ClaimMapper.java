@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.Claim;
+import com.ruoyi.system.domain.Discount;
 
 /**
  * 【请填写功能名称】Mapper接口
@@ -60,11 +61,10 @@ public interface ClaimMapper
     public int deleteClaimByClaimIds(Long[] claimIds);
 
     /**
-     * 根据openId和活动id查询优惠券信息id
-     * @param openId
-     * @param activityId
+     * 根据openId和活动id查询优惠券信息
+     * @param claim
      * @return
      */
-    public Long selectMsg(String openId,Long activityId);
+    public Discount selectMsg(Claim claim);
 }
 

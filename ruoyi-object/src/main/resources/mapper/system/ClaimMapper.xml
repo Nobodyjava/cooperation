@@ -68,11 +68,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 根据openId和活动id查询优惠券信息 -->
     <select id="selectMsg" parameterType="claim">
         SELECT
-            discount_id
+	    d.discount_id,d.discount_type,d.discount_name
         FROM
-            claim
+	    discount d,claim c
         WHERE
-            openId = #{openId}
-          AND activity_id = #{activityId};
+	    d.discount_id = c.discount_id
+	    AND
+	    c.openId = #{openId}
+	    AND
+	    c.activity_id = #{activityId}
     </select>
 </mapper>

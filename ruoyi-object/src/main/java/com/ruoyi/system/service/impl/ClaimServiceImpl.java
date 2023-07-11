@@ -1,6 +1,8 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.Discount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.ClaimMapper;
@@ -92,14 +94,15 @@ public class ClaimServiceImpl implements IClaimService
     }
 
     /**
-     * 根据openId和活动id查询优惠券信息id
-     * @param openId
-     * @param activityId
+     * 根据openId和活动id查询优惠券信息
+     * @param claim
      * @return
      */
     @Override
-    public Long selectMsg(String openId, Long activityId) {
-        return null;
+    public Discount selectMsg(Claim claim) {
+        return claimMapper.selectMsg(claim);
     }
+
+
 }
 

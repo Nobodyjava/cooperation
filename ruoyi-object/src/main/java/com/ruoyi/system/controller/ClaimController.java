@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.Anonymous;
+import com.ruoyi.system.domain.Discount;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -108,6 +109,18 @@ public class ClaimController extends BaseController
     public AjaxResult remove(@PathVariable Long[] claimIds)
     {
         return toAjax(claimService.deleteClaimByClaimIds(claimIds));
+    }
+
+    /**
+     * 根据openId和活动id查询优惠券信息
+     * @param claim
+     * @return
+     */
+    @Anonymous
+    @PostMapping("/selectMsg")
+    public Discount selectMsg(@RequestBody Claim claim) {
+        Discount discount = claimService.selectMsg(claim);
+        return discount;
     }
 }
 

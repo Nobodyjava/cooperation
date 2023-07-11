@@ -1,6 +1,8 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.system.mapper.ActivityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.GoodsMapper;
@@ -18,6 +20,9 @@ public class GoodsServiceImpl implements IGoodsService
 {
     @Autowired
     private GoodsMapper goodsMapper;
+
+    @Autowired
+    private ActivityMapper activityMapper;
 
     /**
      * 查询【请填写功能名称】
