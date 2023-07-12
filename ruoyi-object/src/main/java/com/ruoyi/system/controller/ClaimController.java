@@ -118,10 +118,9 @@ public class ClaimController extends BaseController
      */
     @Anonymous
     @PostMapping("/selectMsg")
-    public Discount selectMsg(@RequestBody Claim claim) {
-        Discount discount = claimService.selectMsg(claim);
-        System.out.println("返回的优惠券对象:" + discount.toString());
-        return discount;
+    public AjaxResult selectMsg(@RequestBody Claim claim) {
+        List<Discount> discounts = claimService.selectMsg(claim);
+        return AjaxResult.success(discounts);
     }
 }
 

@@ -1,6 +1,9 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.Goods;
+import com.ruoyi.system.mapper.GoodsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.ActivityMapper;
@@ -18,6 +21,9 @@ public class ActivityServiceImpl implements IActivityService
 {
     @Autowired
     private ActivityMapper activityMapper;
+
+    @Autowired
+    private GoodsMapper goodsMapper;
 
     /**
      * 查询【请填写功能名称】
@@ -52,6 +58,9 @@ public class ActivityServiceImpl implements IActivityService
     @Override
     public int insertActivity(Activity activity)
     {
+        Goods goods = new Goods();
+        goods.setGoodsId(activity.getGoodsId());
+        goodsMapper.updateGoodsEndtime(goods);
         return activityMapper.insertActivity(activity);
     }
 

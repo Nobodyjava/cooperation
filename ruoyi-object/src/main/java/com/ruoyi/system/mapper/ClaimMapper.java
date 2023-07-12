@@ -65,6 +65,6 @@ public interface ClaimMapper
      * @param claim
      * @return
      */
-    public Discount selectMsg(Claim claim);
+    public List<Discount> selectMsg(Claim claim);
 }
 

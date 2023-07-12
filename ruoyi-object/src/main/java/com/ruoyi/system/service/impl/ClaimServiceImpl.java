@@ -100,7 +100,7 @@ public class ClaimServiceImpl implements IClaimService
      * @return
      */
     @Override
-    public Discount selectMsg(Claim claim) {
+    public List<Discount> selectMsg(Claim claim) {
         return claimMapper.selectMsg(claim);
     }
 

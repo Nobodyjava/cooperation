@@ -54,9 +54,6 @@ public class GoodsServiceImpl implements IGoodsService
     @Override
     public int insertGoods(Goods goods)
     {
-//        return goodsMapper.insertGoods(goods);
-        goodsMapper.insertGoods(goods);
-        goodsMapper.updateGoodsEndtime(goods);
         return goodsMapper.insertGoods(goods);
     }
 
