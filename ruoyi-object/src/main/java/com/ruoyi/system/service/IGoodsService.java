@@ -71,6 +71,6 @@ public interface IGoodsService
      * @param goods
      * @return
      */
-    public Goods updateGoodsEndtime(Goods goods);
+    public int updateGoodsEndtime(Goods goods);
 }
 

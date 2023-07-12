@@ -21,9 +21,6 @@ public class GoodsServiceImpl implements IGoodsService
     @Autowired
     private GoodsMapper goodsMapper;
 
-    @Autowired
-    private ActivityMapper activityMapper;
-
     /**
      * 查询【请填写功能名称】
      *
@@ -57,6 +54,9 @@ public class GoodsServiceImpl implements IGoodsService
     @Override
     public int insertGoods(Goods goods)
     {
+//        return goodsMapper.insertGoods(goods);
+        goodsMapper.insertGoods(goods);
+        goodsMapper.updateGoodsEndtime(goods);
         return goodsMapper.insertGoods(goods);
     }
 
@@ -112,7 +112,7 @@ public class GoodsServiceImpl implements IGoodsService
      * @return
      */
     @Override
-    public Goods updateGoodsEndtime(Goods goods) {
+    public int updateGoodsEndtime(Goods goods) {
         Goods updateGoods = goodsMapper.selectGoodsByGoodsId(goods.getGoodsId());
         String fundays = updateGoods.getFundays();
         System.out.println("当前的有效天数:" + fundays);

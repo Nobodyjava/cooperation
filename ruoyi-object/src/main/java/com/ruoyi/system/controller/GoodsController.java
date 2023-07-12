@@ -138,9 +138,8 @@ public class GoodsController extends BaseController
      */
     @Anonymous
     @PostMapping("/updateGoodsEndtime")
-    public Goods updateGoodsEndtime(@RequestBody Goods goods) {
-        Goods updateGoods = goodsService.updateGoodsEndtime(goods);
-        return updateGoods;
+    public int updateGoodsEndtime(@RequestBody Goods goods) {
+        return goodsService.updateGoodsEndtime(goods);
     }
 
 }

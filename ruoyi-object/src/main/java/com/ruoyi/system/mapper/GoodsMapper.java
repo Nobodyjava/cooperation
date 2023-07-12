@@ -71,5 +71,5 @@ public interface GoodsMapper
      * @param goods
      * @return
      */
-    public Goods updateGoodsEndtime(Goods goods);
+    public int updateGoodsEndtime(Goods goods);
 }
