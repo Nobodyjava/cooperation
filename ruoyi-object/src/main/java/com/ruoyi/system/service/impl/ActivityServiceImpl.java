@@ -51,7 +51,6 @@ public class ActivityServiceImpl implements IActivityService
 
     /**
      * 新增【请填写功能名称】
-     * 
      * @param activity 【请填写功能名称】
      * @return 结果
      */

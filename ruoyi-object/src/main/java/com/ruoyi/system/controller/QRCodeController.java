@@ -59,7 +59,7 @@ public class QRCodeController {
         //这里需要换成你d的小程序appid
         String appid = "wxbffc93045c2d3356";
         //这里需要换成你的小程序secret
-        String appSecret = "45e37b7fb3f2430c54ae64771f2bb6c2";
+        String appSecret = "b56679c82283815f6ae77f8b2c06bff3";
         //获取微信ACCESS_TOKEN 的Url
         String accent_token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
         String url = accent_token_url.replace("APPID", appid).replace("APPSECRET", appSecret);
