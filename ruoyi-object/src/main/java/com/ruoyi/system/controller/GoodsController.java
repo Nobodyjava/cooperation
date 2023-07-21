@@ -131,16 +131,16 @@ public class GoodsController extends BaseController
         return goods;
     }
 
-    /**
-     * 根据商品id修改截止核销时间
-     * @param goods
-     * @return
-     */
-    @Anonymous
-    @PostMapping("/updateGoodsEndtime")
-    public int updateGoodsEndtime(@RequestBody Goods goods) {
-        return goodsService.updateGoodsEndtime(goods);
-    }
+//    /**
+//     * 根据商品id修改截止核销时间
+//     * @param goods
+//     * @return
+//     */
+//    @Anonymous
+//    @PostMapping("/updateGoodsEndtime")
+//    public int updateGoodsEndtime(@RequestBody Goods goods) {
+//        return goodsService.updateGoodsEndtime(goods);
+//    }
 
 }
 

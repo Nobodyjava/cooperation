@@ -5,6 +5,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.Anonymous;
+import com.ruoyi.system.domain.CommonData;
+import com.ruoyi.system.domain.Goods;
+import com.ruoyi.system.service.ICommonDataService;
+import com.ruoyi.system.service.IGoodsService;
+import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +34,12 @@ public class ActivityController extends BaseController
 {
     @Autowired
     private IActivityService activityService;
+
+    @Autowired
+    private IGoodsService goodsService;
+
+    @Autowired
+    private ICommonDataService commonDataService;
 
     /**
      * 查询活动列表
@@ -79,6 +90,16 @@ public class ActivityController extends BaseController
     {
         activityService.insertActivity(activity);
         return AjaxResult.success(activity.getActivityId());
+    }
+
+    @PostMapping("/insertActivity")
+    public AjaxResult insertActivity(@RequestBody CommonData commonData){
+        System.out.println("commonData"+commonData.toString());
+        System.out.println("shopper"+commonData.getShopper());
+        System.out.println("goods"+commonData.getGoods().toString());
+        System.out.println("activity"+commonData.getActivity().toString());
+        commonDataService.InsertCommonData(commonData);
+        return AjaxResult.success(commonData.getActivity().getActivityId());
     }
 
     /**

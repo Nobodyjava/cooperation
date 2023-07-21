@@ -99,6 +99,12 @@
         where consultant_id = #{consultantId}
     </select>
 
+    <!-- 根据顾问id查询商家信息 -->
+    <select id="selectShopperByConsultantId1" parameterType="Long" resultMap="ShopperResult">
+    <include refid="selectShopperVo"/>
+    where consultant_id = #{consultantId}
+    </select>
+
     <!-- 提现(根据顾问id修改商家总收益为0) -->
     <update id="updateShopperGainByConsultantId" parameterType="Shopper">
         update shopper set shopper_gain = 0 where consultant_id = #{consultantId}

@@ -1,42 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.ForwardMapper">
-    
+
     <resultMap type="Forward" id="ForwardResult">
-        <id property="forwardId"    column="forward_id"    />
+        <result property="forwardId"    column="forward_id"    />
         <result property="consultantId"    column="consultant_id"    />
         <result property="goodsId"    column="goods_id"    />
         <result property="activityId"    column="activity_id"    />
         <result property="openId"    column="open_id"    />
+        <result property="phone"    column="phone"    />
+        <result property="bPhone"    column="b_phone"    />
         <result property="helpCount"    column="help_count"    />
-        <result property="status"   column="status"     />
+        <result property="status"    column="status"    />
     </resultMap>
 
     <sql id="selectForwardVo">
-        select forward_id, consultant_id, goods_id, activity_id, open_id, help_count, status from forward
+        select forward_id, consultant_id, goods_id, activity_id, open_id, phone, b_phone, help_count, status from forward
     </sql>
 
     <select id="selectForwardList" parameterType="Forward" resultMap="ForwardResult">
         <include refid="selectForwardVo"/>
-        <where>  
+        <where>
             <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
             <if test="goodsId != null "> and goods_id = #{goodsId}</if>
             <if test="activityId != null "> and activity_id = #{activityId}</if>
-            <if test="openId != null "> and open_id = #{openId}</if>
+            <if test="openId != null  and openId != ''"> and open_id = #{openId}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="bPhone != null  and bPhone != ''"> and b_phone = #{bPhone}</if>
             <if test="helpCount != null "> and help_count = #{helpCount}</if>
+            <if test="status != null "> and status = #{status}</if>
         </where>
     </select>
-    
+
     <select id="selectForwardByForwardId" parameterType="Long" resultMap="ForwardResult">
         <include refid="selectForwardVo"/>
         where forward_id = #{forwardId}
     </select>
-        
+
     <insert id="insertForward" parameterType="Forward" useGeneratedKeys="true" keyProperty="forwardId">
-        insert into forward (consultant_id,goods_id,activity_id,open_id)
-        values (#{consultantId},#{goodsId},#{activityId},#{openId})
+        insert into forward (consultant_id,goods_id,activity_id,open_id,phone,b_phone)
+        values (#{consultantId},#{goodsId},#{activityId},#{openId},#{phone},#{bPhone})
     </insert>
 
     <update id="updateForward" parameterType="Forward">
@@ -46,6 +51,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="goodsId != null">goods_id = #{goodsId},</if>
             <if test="activityId != null">activity_id = #{activityId},</if>
             <if test="openId != null">open_id = #{openId},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="bPhone != null">b_phone = #{bPhone},</if>
             <if test="helpCount != null">help_count = #{helpCount},</if>
             <if test="status != null">status = #{status},</if>
         </trim>
@@ -57,14 +64,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteForwardByForwardIds" parameterType="String">
-        delete from forward where forward_id in 
+        delete from forward where forward_id in
         <foreach item="forwardId" collection="array" open="(" separator="," close=")">
             #{forwardId}
         </foreach>
     </delete>
 
+    <!-- 根据活动id、openId、phone、bphone修改当前助力人数+1 -->
     <update id="updateHelpCount" parameterType="Forward">
-        update forward set help_count = help_count + 1 where activity_id = #{activityId} and open_id = #{openId}
+        update forward
+        set help_count = help_count + 1
+        where activity_id = #{activityId}
+        and open_id = #{openId}
+        and phone = #{phone}
+        and b_phone = #{bPhone}
     </update>
 
     <!-- 根据活动id和openid修改核销码状态 -->
@@ -80,5 +93,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectForwardVo"/>
         where activity_id = #{activityId}
         and open_id = #{openId}
+        and phone = #{phone}
+    </select>
+
+    <!-- 根据活动id和openid查询参与人手机号 -->
+    <select id="selectPhoneByAOpenId" parameterType="Forward" resultMap="ForwardResult">
+        select phone from forward
+        where activity_id = #{activityId}
+        and open_id = #{openId}
+    </select>
+
+    <!-- 根据活动id和被邀请人手机号查询转发集赞信息 -->
+    <select id="selectCheckForward" parameterType="Forward" resultMap="ForwardResult">
+        select * from forward
+        where activity_id = #{activityId}
+        and b_phone = #{bPhone}
     </select>
 </mapper>

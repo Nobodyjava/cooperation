@@ -97,4 +97,11 @@ public interface ActivityMapper
      */
     public int selectActivityNum(Long consultantId);
 
+    /**
+     * 根据商品id查询活动信息
+     * @param goodsId
+     * @return
+     */
+    public Activity selectActivityByGoodsId(Long goodsId);
+
 }

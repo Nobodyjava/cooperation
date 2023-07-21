@@ -125,4 +125,9 @@
             consultant_id = #{consultantId}
     </select>
 
+    <!-- 根据商品id查询活动信息 -->
+    <select id="selectActivityByGoodsId" parameterType="Activity">
+        <include refid="selectActivityVo"/>
+        where goods_id = #{goodsId}
+    </select>
 </mapper>

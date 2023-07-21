@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.Activity;
 import com.ruoyi.system.domain.Goods;
 
 /**
@@ -71,6 +73,13 @@ public interface IGoodsService
      * @param goods
      * @return
      */
-    public int updateGoodsEndtime(Goods goods);
+    public int updateGoodsEndtime(Goods goods, Activity activity);
+
+    /**
+     * 根据活动id查询到商品id，再通过商品id查询到商品剩余数量，进行核销后剩余数量-1
+     * @param activityId
+     * @return
+     */
+    public Long updateGoodsRemainNum(Long activityId);
 }
 

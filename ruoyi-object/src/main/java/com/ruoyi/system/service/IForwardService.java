@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import com.ruoyi.system.domain.Forward;
 
@@ -60,7 +61,7 @@ public interface IForwardService
     public int deleteForwardByForwardId(Long forwardId);
 
     /**
-     * 根据活动id和openId修改当前助力人数+1
+     * 根据活动id、openId、phone、bphone修改当前助力人数+1
      * @return
      */
     public int updateHelpCount(Forward forward);
@@ -78,4 +79,12 @@ public interface IForwardService
      * @return
      */
     public Forward selectForwardMsg(Forward forward);
+
+    /**
+     * 根据活动id和openid查询参与人手机号
+     * @param forward
+     * @return
+     */
+    public Forward selectPhoneByAOpenId(Forward forward);
+
 }

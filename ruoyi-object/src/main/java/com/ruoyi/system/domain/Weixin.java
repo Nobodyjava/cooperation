@@ -2,15 +2,23 @@ package com.ruoyi.system.domain;
 
 public class Weixin {
 
-    private String accessToken;
+    private String access_token;
     private String phone;
 
-    public String getAccessToken() {
-        return accessToken;
+    @Override
+    public String toString() {
+        return "Weixin{" +
+                "access_token='" + access_token + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public String getAccess_token() {
+        return access_token;
+    }
+
+    public void setAccess_token(String access_token) {
+        this.access_token = access_token;
     }
 
     public String getPhone() {
@@ -19,13 +27,5 @@ public class Weixin {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    @Override
-    public String toString() {
-        return "Weixin{" +
-                "accessToken='" + accessToken + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
     }
 }

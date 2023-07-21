@@ -20,7 +20,7 @@ export function getForward(forwardId) {
 // 新增【请填写功能名称】
 export function addForward(data) {
   return request({
-    url: '/object/forward',
+    url: '/object/forward/insert',
     method: 'post',
     data: data
   })

@@ -60,7 +60,7 @@ public interface ForwardMapper
     public int deleteForwardByForwardIds(Long[] forwardIds);
 
     /**
-     * 根据活动id和openId修改当前助力人数+1
+     * 根据活动id、openId、phone、bphone修改当前助力人数+1
      * @return
      */
     public int updateHelpCount(Forward forward);
@@ -73,9 +73,25 @@ public interface ForwardMapper
     public int updateStatus(Forward forward);
 
     /**
-     * 根据活动id和openid查询转发集赞信息
+     * 根据活动id、openid、phone查询转发集赞信息
      * @param forward
      * @return
      */
     public Forward selectForwardMsg(Forward forward);
+
+    /**
+     * 根据活动id和openid查询参与人手机号
+     * @param forward
+     * @return
+     */
+    public Forward selectPhoneByAOpenId(Forward forward);
+
+    /**
+     * 根据活动id和被邀请人手机号查询转发集赞信息
+     * @param forward
+     * @return
+     */
+    public Forward selectCheckForward(Forward forward);
+
+
 }

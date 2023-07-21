@@ -4,14 +4,23 @@ package com.ruoyi.system.domain;
  * 微信实体类
  */
 public class MyWeixin {
-    /** openid */
-    String openId = "";
+    String session_key = "";
+    private String openId = "";
 
     public MyWeixin() {
     }
 
-    public MyWeixin(String openId) {
+    public MyWeixin(String session_key, String openId) {
+        this.session_key = session_key;
         this.openId = openId;
+    }
+
+    public String getSession_key() {
+        return session_key;
+    }
+
+    public void setSession_key(String session_key) {
+        this.session_key = session_key;
     }
 
     public String getOpenId() {
@@ -25,7 +34,9 @@ public class MyWeixin {
     @Override
     public String toString() {
         return "MyWeixin{" +
-                "openId='" + openId + '\'' +
+                "session_key='" + session_key + '\'' +
+                ", openId='" + openId + '\'' +
                 '}';
     }
 }
+

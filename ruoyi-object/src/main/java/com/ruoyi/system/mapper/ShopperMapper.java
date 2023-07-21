@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.Shopper;
+import com.ruoyi.system.domain.Withdrawal;
 
 /**
  * 【请填写功能名称】Mapper接口
@@ -73,6 +74,8 @@ public interface ShopperMapper
      * @return
      */
     public Shopper selectShopperByConsultantId(Long consultantId);
+
+    public List<Shopper> selectShopperByConsultantId1(Long consultantId);
 
     /**
      * 提现(根据顾问id修改商家总收益为0)

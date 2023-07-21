@@ -1,11 +1,15 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.system.service.IGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.ForwardMapper;
 import com.ruoyi.system.domain.Forward;
 import com.ruoyi.system.service.IForwardService;
+
+import static net.sf.jsqlparser.parser.feature.Feature.insert;
 
 /**
  * 【请填写功能名称】Service业务层处理
@@ -18,6 +22,9 @@ public class ForwardServiceImpl implements IForwardService
 {
     @Autowired
     private ForwardMapper forwardMapper;
+
+    @Autowired
+    private IGoodsService goodsService;
 
     /**
      * 查询【请填写功能名称】
@@ -52,12 +59,19 @@ public class ForwardServiceImpl implements IForwardService
     @Override
     public int insertForward(Forward forward)
     {
-        Forward chkForward = forwardMapper.selectForwardMsg(forward);
-        if (chkForward != null) {
-            return 1;
-        }else {
+//        Forward checkForward = forwardMapper.selectCheckForward(forward);
+//        if (checkForward != null) {
+//            return 500;
+//        } else {
+//            return forwardMapper.insertForward(forward);
+//        }
+        Forward checkForward = forwardMapper.selectForwardMsg(forward);
+        System.out.println("查询结果:" + checkForward);
+        if (checkForward == null) {
             return forwardMapper.insertForward(forward);
         }
+
+        return -1;
     }
 
     /**
@@ -96,9 +110,25 @@ public class ForwardServiceImpl implements IForwardService
         return forwardMapper.deleteForwardByForwardId(forwardId);
     }
 
+    /**
+     * 根据活动id、openId、phone、bphone修改当前助力人数+1
+     * @param forward
+     * @return
+     */
     @Override
     public int updateHelpCount(Forward forward) {
-        return forwardMapper.updateHelpCount(forward);
+        Forward checkForward = forwardMapper.selectCheckForward(forward);
+        if(checkForward == null){
+            int i = forwardMapper.insertForward(forward);
+            if (i > 0) {
+                return forwardMapper.updateHelpCount(forward);
+            } else {
+                return -1;
+            }
+        }else{
+            return -1;
+        }
+
     }
 
 
@@ -109,6 +139,8 @@ public class ForwardServiceImpl implements IForwardService
      */
     @Override
     public int updateStatus(Forward forward) {
+        forwardMapper.updateStatus(forward);
+        goodsService.updateGoodsRemainNum(forward.getActivityId());
         return forwardMapper.updateStatus(forward);
     }
 
@@ -120,6 +152,16 @@ public class ForwardServiceImpl implements IForwardService
     @Override
     public Forward selectForwardMsg(Forward forward) {
         return forwardMapper.selectForwardMsg(forward);
+    }
+
+    /**
+     * 根据活动id和openid查询参与人手机号
+     * @param forward
+     * @return
+     */
+    @Override
+    public Forward selectPhoneByAOpenId(Forward forward) {
+        return forwardMapper.selectPhoneByAOpenId(forward);
     }
 
 

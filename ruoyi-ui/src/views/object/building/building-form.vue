@@ -48,7 +48,7 @@
 <script>
 // import axios from "axios";
 import { uploads } from "@/api/object/uploads.js";
-import { addBuilding } from "@/api/object/building.js";
+  import { addBuilding } from "@/api/object/building.js";
 import axios from "axios";
 export default {
   data() {

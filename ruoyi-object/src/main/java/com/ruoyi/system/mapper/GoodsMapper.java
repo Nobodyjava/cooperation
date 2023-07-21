@@ -72,4 +72,5 @@ public interface GoodsMapper
      * @return
      */
     public int updateGoodsEndtime(Goods goods);
+
 }

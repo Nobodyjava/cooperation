@@ -111,12 +111,11 @@
 
     <!-- 根据商品id修改截止核销时间 -->
     <update id="updateGoodsEndtime" parameterType="Goods">
-        UPDATE goods g,activity a
+        UPDATE goods g
         SET
-        g.endtime = DATE_ADD( a.endtime, INTERVAL g.fundays DAY )
+        g.endtime = #{endtime}
         WHERE
-	    a.goods_id = g.goods_id
-	    AND
-	    g.goods_id = #{goodsId};
+	    g.goods_id = #{goodsId}
     </update>
+
 </mapper>

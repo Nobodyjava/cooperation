@@ -1,16 +1,20 @@
 package com.ruoyi.system.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSON;
 import com.ruoyi.common.annotation.Anonymous;
+import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.system.domain.Weixin;
+import com.ruoyi.system.service.IVerificationService;
 import org.apache.poi.ss.usermodel.FormulaError;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -32,6 +36,9 @@ public class ForwardController extends BaseController
 {
     @Autowired
     private IForwardService forwardService;
+
+    @Autowired
+    private IVerificationService verificationService;
 
     private String appid = "wx2b25712ec17c6900";
 
@@ -79,7 +86,7 @@ public class ForwardController extends BaseController
      * 新增【请填写功能名称】
      */
     @Anonymous
-    //@PreAuthorize("@ss.hasPermi('object:forward:add')")
+    //@PreAuthorize("@ss.hasPermi('system:forward:add')")
     //@Log(title = "【请填写功能名称】", businessType = BusinessType.INSERT)
     @PostMapping("/insert")
     public AjaxResult add(@RequestBody Forward forward)
@@ -131,7 +138,7 @@ public class ForwardController extends BaseController
             weixin = JSON.parseObject(response.getBody(),Weixin.class);
             // 在这里处理返回的响应体
 
-            String url1 = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token="+weixin.getAccessToken()+"&code="+code;
+            String url1 = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token="+weixin.getAccess_token()+"&code="+code;
             String methods = "GET"; // 请求方法，可以是GET、POST等
             String headerss = "-H 'Content-Type: application/json' -H 'Authorization: Bearer token'"; // 请求头部信息
 
@@ -144,12 +151,13 @@ public class ForwardController extends BaseController
     }
 
     /**
-     * 根据活动id和openId修改当前助力人数+1
+     * 根据活动id、openId、phone、bphone修改当前助力人数+1
      * @return
      */
     @Anonymous
     @PostMapping("/update")
     public AjaxResult updateHelpCount(@RequestBody Forward forward) {
+        System.out.println("forward:" + forward.toString());
         return AjaxResult.success(forwardService.updateHelpCount(forward));
     }
 
@@ -160,8 +168,20 @@ public class ForwardController extends BaseController
      */
     @Anonymous
     @PostMapping("updateMsg")
-    public AjaxResult updateMsg(@RequestBody Forward forward) {
-        return AjaxResult.success(forwardService.updateStatus(forward));
+    public AjaxResult updateMsg(@RequestBody Forward forward,@RequestParam("phone") String phone) {
+        String s = selectMsg(forward.getActivityId());
+        String[] parts = s.split(";");
+        List<String> list = Arrays.asList(parts);
+        if (list.contains(phone)) {
+            return AjaxResult.success(forwardService.updateStatus(forward));
+        }
+         return AjaxResult.error();
+
+    }
+
+    public String selectMsg(Long activityId) {
+        String s = verificationService.selectShopperByActivityId(activityId);
+        return s;
     }
 
     /**
@@ -175,4 +195,18 @@ public class ForwardController extends BaseController
         Forward forwardMsg = forwardService.selectForwardMsg(forward);
         return forwardMsg;
     }
+
+    /**
+     * 根据活动id和openid查询参与人手机号
+     * @param forward
+     * @return
+     */
+    @Anonymous
+    @PostMapping("/selectPhone")
+    public AjaxResult selectPhone(@RequestBody Forward forward) {
+//        String phone = forwardService.selectPhoneByAOpenId(forward);
+//        return phone;
+        return AjaxResult.success(forwardService.selectPhoneByAOpenId(forward));
+    }
+
 }
