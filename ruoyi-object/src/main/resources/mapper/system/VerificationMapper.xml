@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.VerificationMapper">
+
+    <resultMap type="Verification" id="VerificationResult">
+        <id property="verificationId"    column="verification_id"    />
+        <result property="activityId"    column="activity_id"    />
+        <result property="openid"    column="openid"    />
+        <result property="validatedAccount"    column="validated_account"    />
+    </resultMap>
+
+    <sql id="selectVerificationVo">
+        select verification_id, activity_id, openid, validated_account from verification
+    </sql>
+
+    <select id="selectVerificationList" parameterType="Verification" resultMap="VerificationResult">
+        <include refid="selectVerificationVo"/>
+        <where>
+            <if test="activityId != null "> and activity_id = #{activityId}</if>
+            <if test="openid != null "> and openid = #{openid}</if>
+            <if test="validatedAccount != null  and validatedAccount != ''"> and validated_account = #{validatedAccount}</if>
+        </where>
+    </select>
+
+    <select id="selectVerificationByVerificationId" parameterType="Long" resultMap="VerificationResult">
+        <include refid="selectVerificationVo"/>
+        where verification_id = #{verificationId}
+    </select>
+
+    <insert id="insertVerification" parameterType="Verification" useGeneratedKeys="true" keyProperty="verificationId">
+        insert into verification
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="activityId != null">activity_id,</if>
+            <if test="openid != null">openid,</if>
+            <if test="validatedAccount != null">validated_account,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="activityId != null">#{activityId},</if>
+            <if test="openid != null">#{openid},</if>
+            <if test="validatedAccount != null">#{validatedAccount},</if>
+        </trim>
+    </insert>
+
+    <update id="updateVerification" parameterType="Verification">
+        update verification
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="activityId != null">activity_id = #{activityId},</if>
+            <if test="openid != null">openid = #{openid},</if>
+            <if test="validatedAccount != null">validated_account = #{validatedAccount},</if>
+        </trim>
+        where verification_id = #{verificationId}
+    </update>
+
+    <delete id="deleteVerificationByVerificationId" parameterType="Long">
+        delete from verification where verification_id = #{verificationId}
+    </delete>
+
+    <delete id="deleteVerificationByVerificationIds" parameterType="String">
+        delete from verification where verification_id in
+        <foreach item="verificationId" collection="array" open="(" separator="," close=")">
+            #{verificationId}
+        </foreach>
+    </delete>
+</mapper>

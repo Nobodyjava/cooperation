@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.WithdrawalMapper">
+    
+    <resultMap type="Withdrawal" id="WithdrawalResult">
+        <id property="withdrawalId"    column="withdrawal_id"    />
+        <result property="consultantId"     column="consultant_id" />
+        <result property="phone"    column="phone"    />
+        <result property="money"    column="money"    />
+        <result property="withdrawalTime"    column="withdrawal_time"    />
+    </resultMap>
+
+    <sql id="selectWithdrawalVo">
+        select withdrawal_id, consultant_id, phone, money, withdrawal_time from withdrawal
+    </sql>
+
+    <select id="selectWithdrawalList" parameterType="Withdrawal" resultMap="WithdrawalResult">
+        <include refid="selectWithdrawalVo"/>
+        <where>
+            <if test="consultantId != null  and consultantId != ''"> and consultant_id = #{consultantId}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="money != null "> and money = #{money}</if>
+            <if test="withdrawalTime != null "> and withdrawal_time = #{withdrawalTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectWithdrawalByWithdrawalId" parameterType="Long" resultMap="WithdrawalResult">
+        <include refid="selectWithdrawalVo"/>
+        where withdrawal_id = #{withdrawalId}
+    </select>
+        
+    <insert id="insertWithdrawal" parameterType="Withdrawal" useGeneratedKeys="true" keyProperty="withdrawalId">
+        insert into withdrawal
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="consultantId != null">consultant_id,</if>
+            <if test="phone != null">phone,</if>
+            <if test="money != null">money,</if>
+            <if test="withdrawalTime != null">withdrawal_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="consultantId != null">#{consultantId},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="money != null">#{money},</if>
+            <if test="withdrawalTime != null">#{withdrawalTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWithdrawal" parameterType="Withdrawal">
+        update withdrawal
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consultantId != null">consultant_id = #{consultantId},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="money != null">money = #{money},</if>
+            <if test="withdrawalTime != null">withdrawal_time = #{withdrawalTime},</if>
+        </trim>
+        where withdrawal_id = #{withdrawalId}
+    </update>
+
+    <delete id="deleteWithdrawalByWithdrawalId" parameterType="Long">
+        delete from withdrawal where withdrawal_id = #{withdrawalId}
+    </delete>
+
+    <delete id="deleteWithdrawalByWithdrawalIds" parameterType="String">
+        delete from withdrawal where withdrawal_id in 
+        <foreach item="withdrawalId" collection="array" open="(" separator="," close=")">
+            #{withdrawalId}
+        </foreach>
+    </delete>
+
+    <!-- 根据提现时间降序查询提现记录 -->
+    <select id="selectWithdrawalByTime" parameterType="Withdrawal" resultMap="WithdrawalResult">
+        select * from withdrawal where consultant_id = #{consultantId} order by withdrawal_time desc;
+    </select>
+
+    <!-- 查询钱包金额 -->
+    <select id="selectSumMoney" parameterType="Withdrawal" resultType="java.math.BigDecimal">
+        select sum(money) from withdrawal where consultant_id = #{consultantId}
+    </select>
+</mapper>
