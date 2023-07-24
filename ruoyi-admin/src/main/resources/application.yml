@@ -18,12 +18,12 @@ ruoyi:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
-  port: 8080
-#  port: 443
-#  ssl:
-#    key-store-password: Yydsb1234
-#    key-store: back.yttwlxf.com.pfx
-#    key-alias: back.yttwlxf.com
+#  port: 8080
+  port: 443
+  ssl:
+    key-store-password: Yydsb1234
+    key-store: back.yttwlxf.com.pfx
+    key-alias: back.yttwlxf.com
   servlet:
     # 应用的访问路径
     context-path: /
