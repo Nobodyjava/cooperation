@@ -60,6 +60,7 @@ public class ActivityServiceImpl implements IActivityService
     {
         Goods goods = new Goods();
         goods.setGoodsId(activity.getGoodsId());
+        goods.setGoodsRemainnum(goods.getGoodsTotalnum());
         System.out.println("获得的商品id:" + activity.getGoodsId());
         System.out.println("00000获得的商品id:" + goods.getGoodsId());
         goodsService.updateGoodsEndtime(goods, activity);

@@ -93,7 +93,6 @@
         <include refid="selectForwardVo"/>
         where activity_id = #{activityId}
         and open_id = #{openId}
-        and phone = #{phone}
     </select>
 
     <!-- 根据活动id和openid查询参与人手机号 -->
