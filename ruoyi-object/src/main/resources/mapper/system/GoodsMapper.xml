@@ -118,4 +118,12 @@
 	    g.goods_id = #{goodsId}
     </update>
 
+<!--    更新商品剩余数量-->
+    <update id="updateGoodsRemain" parameterType="Goods">
+        update goods
+        set
+        goods_remainnum = #{goodsRemainnum}
+        where goods_id = #{goodsId}
+    </update>
+
 </mapper>

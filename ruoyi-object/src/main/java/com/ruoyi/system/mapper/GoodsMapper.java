@@ -73,4 +73,6 @@ public interface GoodsMapper
      */
     public int updateGoodsEndtime(Goods goods);
 
+    //更新商品剩余数量
+    public int updateGoodsRemain(Goods goods);
 }

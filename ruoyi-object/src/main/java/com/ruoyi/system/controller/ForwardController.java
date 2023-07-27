@@ -172,6 +172,7 @@ public class ForwardController extends BaseController
         String s = selectMsg(forward.getActivityId());
         String[] parts = s.split(";");
         List<String> list = Arrays.asList(parts);
+        System.out.println("sssssss"+list.contains(phone));
         if (list.contains(phone)) {
             return AjaxResult.success(forwardService.updateStatus(forward));
         }
@@ -181,6 +182,7 @@ public class ForwardController extends BaseController
 
     public String selectMsg(Long activityId) {
         String s = verificationService.selectShopperByActivityId(activityId);
+        System.out.println("sssssssss"+s);
         return s;
     }
 

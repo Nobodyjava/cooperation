@@ -30,6 +30,8 @@ public class QRCodeController {
             paraMap.put("scene", param);
             //二维码跳转页面
             paraMap.put("page", page);
+            // 设置二维码类型
+            //paraMap.put("env_version","trial");
             //二维码的宽度
             paraMap.put("width", 450);
             //自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调

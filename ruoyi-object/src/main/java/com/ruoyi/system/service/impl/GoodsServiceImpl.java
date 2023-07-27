@@ -19,8 +19,7 @@ import com.ruoyi.system.service.IGoodsService;
  * @date 2023-06-01
  */
 @Service
-public class GoodsServiceImpl implements IGoodsService
-{
+public class GoodsServiceImpl implements IGoodsService {
     @Autowired
     private GoodsMapper goodsMapper;
 
@@ -34,8 +33,7 @@ public class GoodsServiceImpl implements IGoodsService
      * @return 【请填写功能名称】
      */
     @Override
-    public Goods selectGoodsByGoodsId(Long goodsId)
-    {
+    public Goods selectGoodsByGoodsId(Long goodsId) {
         return goodsMapper.selectGoodsByGoodsId(goodsId);
     }
 
@@ -46,8 +44,7 @@ public class GoodsServiceImpl implements IGoodsService
      * @return 【请填写功能名称】
      */
     @Override
-    public List<Goods> selectGoodsList(Goods goods)
-    {
+    public List<Goods> selectGoodsList(Goods goods) {
         return goodsMapper.selectGoodsList(goods);
     }
 
@@ -58,8 +55,7 @@ public class GoodsServiceImpl implements IGoodsService
      * @return 结果
      */
     @Override
-    public int insertGoods(Goods goods)
-    {
+    public int insertGoods(Goods goods) {
         return goodsMapper.insertGoods(goods);
     }
 
@@ -70,8 +66,7 @@ public class GoodsServiceImpl implements IGoodsService
      * @return 结果
      */
     @Override
-    public int updateGoods(Goods goods)
-    {
+    public int updateGoods(Goods goods) {
         return goodsMapper.updateGoods(goods);
     }
 
@@ -82,8 +77,7 @@ public class GoodsServiceImpl implements IGoodsService
      * @return 结果
      */
     @Override
-    public int deleteGoodsByGoodsIds(Long[] goodsIds)
-    {
+    public int deleteGoodsByGoodsIds(Long[] goodsIds) {
         return goodsMapper.deleteGoodsByGoodsIds(goodsIds);
     }
 
@@ -94,13 +88,13 @@ public class GoodsServiceImpl implements IGoodsService
      * @return 结果
      */
     @Override
-    public int deleteGoodsByGoodsId(Long goodsId)
-    {
+    public int deleteGoodsByGoodsId(Long goodsId) {
         return goodsMapper.deleteGoodsByGoodsId(goodsId);
     }
 
     /**
      * 根据顾问id查询商品信息
+     *
      * @param consultantId
      * @return
      */
@@ -111,16 +105,17 @@ public class GoodsServiceImpl implements IGoodsService
 
     /**
      * 根据商品id修改截止核销时间
+     *
      * @param goods
      * @return
      */
     @Override
-    public int updateGoodsEndtime(Goods goods,Activity activity) {
-        System.out.println("goodsId"+goods.getGoodsId());
+    public int updateGoodsEndtime(Goods goods, Activity activity) {
+        System.out.println("goodsId" + goods.getGoodsId());
         Goods updateGoods = goodsMapper.selectGoodsByGoodsId(goods.getGoodsId());
-        System.out.println("111111111111111111111=>"+updateGoods.toString());
+        System.out.println("111111111111111111111=>" + updateGoods.toString());
         long baseTime = new Date(String.valueOf(activity.getEndtime())).getTime();
-        long endTime = baseTime + (1000 * 60 * 60 * 24 *Integer.parseInt(updateGoods.getFundays()));
+        long endTime = baseTime + (1000 * 60 * 60 * 24 * Integer.parseInt(updateGoods.getFundays()));
         Date goodsEndTime = new Date(endTime);
         updateGoods.setEndtime(goodsEndTime);
         return goodsMapper.updateGoodsEndtime(updateGoods);
@@ -128,6 +123,7 @@ public class GoodsServiceImpl implements IGoodsService
 
     /**
      * 根据活动id查询到商品id，再通过商品id查询到商品剩余数量，进行核销后剩余数量-1
+     *
      * @param activityId
      * @return
      */
@@ -140,7 +136,8 @@ public class GoodsServiceImpl implements IGoodsService
         Long goodsRemainnum = goods.getGoodsRemainnum();
         System.out.println("查询到的商品剩余数量:" + goodsRemainnum);
         goodsRemainnum = goodsRemainnum - 1;
-        goods.setGoodsRemainnum(goodsRemainnum);
+        goods.setGoodsRemainnum(goodsRemainnum >= 0 ? goodsRemainnum : 0);
+        goodsMapper.updateGoodsRemain(goods);
         System.out.println("修改完的商品剩余数量:" + goodsRemainnum);
         return goodsRemainnum;
     }

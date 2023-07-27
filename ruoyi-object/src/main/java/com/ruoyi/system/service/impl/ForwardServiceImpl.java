@@ -139,7 +139,6 @@ public class ForwardServiceImpl implements IForwardService
      */
     @Override
     public int updateStatus(Forward forward) {
-        forwardMapper.updateStatus(forward);
         goodsService.updateGoodsRemainNum(forward.getActivityId());
         return forwardMapper.updateStatus(forward);
     }

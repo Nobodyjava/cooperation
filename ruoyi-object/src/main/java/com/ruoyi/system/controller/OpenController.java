@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.utils.HttpUtils;
+import com.ruoyi.system.utils.WxUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -71,16 +72,16 @@ public class OpenController {
         System.out.println("token:" + accessToken);
         HashMap<String,String> body = new HashMap<String,String>();
         body.put("code", request.getCode());
-        HashMap<String,String> header = new HashMap<String, String>();
         HttpResponse response = null;
         WxPhone wxPhone = new WxPhone();
+
         try {
             response = HttpUtils.doPost("https://api.weixin.qq.com",
                     "/wxa/business/getuserphonenumber?access_token="+accessToken,
                     "post",
                     new HashMap<String, String>(),
-                    body,
-                    new HashMap<String,String>());
+                    new HashMap<String, String>(),
+                    JSONObject.toJSONString(body));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,8 +116,8 @@ public class OpenController {
         }
         try {
             responses = HttpUtils.doGet("https://api.weixin.qq.com",
-                    "/cgi-bin/token",
-                    "post",
+                    "/cgi-bin/token?grant_type=client_credential&appid="+weixinProperties.getAppid()+"&secret="+weixinProperties.getSecret(),
+                    "get",
                     header,
                     new HashMap<>());
         } catch (Exception e) {
@@ -180,5 +181,12 @@ public class OpenController {
             System.out.println(wx.toString());
         }
         return wx.getSession_key();
+    }
+
+    @Anonymous
+    @PostMapping("/getRealPhone")
+    public String getPhone(@RequestBody WxEncryptedData encryptedData){
+        System.out.println("e"+encryptedData.toString());
+        return WxUtils.decrypt(weixinProperties.getAppid(),encryptedData.getEncryptedData(),encryptedData.getSessionKey(),encryptedData.getIv());
     }
 }
