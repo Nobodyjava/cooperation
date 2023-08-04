@@ -63,7 +63,7 @@
 
     <insert id="insertGoods" parameterType="Goods" useGeneratedKeys="true" keyProperty="goodsId">
         insert into goods (consultant_id,goods_type,goods_name,goods_like,img,goods_originalprice,goods_price,goods_totalnum,goods_claimnum,goods_remainnum,goods_limit,usetime,fundays,endtime,discount,price_standard,price_reduction,price_off,goods_claimstatus)
-        values(#{consultantId},#{goodsType},#{goodsName},#{goodsLike},#{img},#{goodsOriginalprice},#{goodsPrice},#{goodsTotalnum},#{goodsClaimnum},#{goodsRemainnum},#{goodsLimit},#{usetime},#{fundays},#{endtime},#{discount},#{priceStandard},#{priceReduction},#{priceOff},#{goodsClaimstatus})
+        values(#{consultantId},#{goodsType},#{goodsName},#{goodsLike},#{img},#{goodsOriginalprice},#{goodsPrice},#{goodsTotalnum},#{goodsClaimnum},#{goodsTotalnum},#{goodsLimit},#{usetime},#{fundays},#{endtime},#{discount},#{priceStandard},#{priceReduction},#{priceOff},#{goodsClaimstatus})
     </insert>
 
     <update id="updateGoods" parameterType="Goods">
