@@ -116,6 +116,7 @@ public class WithdrawalServiceImpl implements IWithdrawalService
     @Override
     public BigDecimal selectSumMoney(Long consultantId) {
         BigDecimal sumMoney = withdrawalMapper.selectSumMoney(consultantId);
+        sumMoney = sumMoney==null ? new BigDecimal(0.00) :sumMoney;
         System.out.println("提现的总金额:" + sumMoney);
         // 根据顾问id获取到商品信息
         List<Shopper> shoppers = shopperMapper.selectShopperByConsultantId1(consultantId);
