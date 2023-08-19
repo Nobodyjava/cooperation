@@ -10,6 +10,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.system.domain.Weixin;
 import com.ruoyi.system.service.IVerificationService;
 import org.apache.poi.ss.usermodel.FormulaError;
+import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -174,10 +175,14 @@ public class ForwardController extends BaseController
         List<String> list = Arrays.asList(parts);
         System.out.println("sssssss"+list.contains(phone));
         if (list.contains(phone)) {
-            return AjaxResult.success(forwardService.updateStatus(forward));
+            int i = forwardService.updateForward(forward);
+            if(i == 1){
+                return AjaxResult.success(1);
+            }else{
+                return AjaxResult.error("请勿核销");
+            }
         }
          return AjaxResult.error();
-
     }
 
     public String selectMsg(Long activityId) {
@@ -209,6 +214,12 @@ public class ForwardController extends BaseController
 //        String phone = forwardService.selectPhoneByAOpenId(forward);
 //        return phone;
         return AjaxResult.success(forwardService.selectPhoneByAOpenId(forward));
+    }
+
+    @Anonymous
+    @PostMapping("/get_all_validinfo")
+    public AjaxResult getAllValidInfo(@RequestParam("userPhone") String userPhone){
+        return AjaxResult.success(forwardService.getAllValidInfo(userPhone));
     }
 
 }

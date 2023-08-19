@@ -115,17 +115,18 @@ public class WithdrawalServiceImpl implements IWithdrawalService
      */
     @Override
     public BigDecimal selectSumMoney(Long consultantId) {
+        // 查询已提现的金额
         BigDecimal sumMoney = withdrawalMapper.selectSumMoney(consultantId);
         sumMoney = sumMoney==null ? new BigDecimal(0.00) :sumMoney;
         System.out.println("提现的总金额:" + sumMoney);
         // 根据顾问id获取到商品信息
-        List<Shopper> shoppers = shopperMapper.selectShopperByConsultantId1(consultantId);
+        List<Shopper> shoppers = shopperMapper.getShopperByPhone(consultantId+"");
         System.out.println(shoppers.size());
         // 定义总收益
         BigDecimal sum = new BigDecimal("0.00");
         // 循环查询出来的商品信息
         for (Shopper shopper : shoppers) {
-            System.out.println(shopper.getShopperGain()+",");
+            System.out.println("1"+shopper.getShopperGain()+",");
 
             BigDecimal a = shopper.getShopperGain()!=null ? shopper.getShopperGain() : new BigDecimal("0.00");
             sum = sum.add(a);

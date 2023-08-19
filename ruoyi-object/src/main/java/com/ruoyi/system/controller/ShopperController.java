@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.system.domain.Goods;
+import com.ruoyi.system.mapper.GoodsMapper;
+import com.ruoyi.system.mapper.ShopperMapper;
 import com.ruoyi.system.service.IActivityService;
 import com.ruoyi.system.service.IGoodsService;
 import org.aspectj.bridge.MessageUtil;
@@ -44,6 +46,12 @@ public class ShopperController extends BaseController {
 
     @Autowired
     private IGoodsService goodsService;
+
+    @Autowired
+    private GoodsMapper goodsMapper;
+
+    @Autowired
+    private ShopperMapper shopperMapper;
 
     /**
      * 查询商家
@@ -139,7 +147,7 @@ public class ShopperController extends BaseController {
         if (os.startsWith("Windows")) {
             path = "D:/image";
         }else{
-            path = "/home/ruoyi/uploadPath";
+            path = "/home/ruoyi/uploadPath/upload";
         }
         File fileRealPath = new File(path);
 //        判断videos文件夹是否存在，不存在，则创建
@@ -204,27 +212,31 @@ public class ShopperController extends BaseController {
      */
     @Anonymous
     @GetMapping("/getGain")
-    public BigDecimal getGain(@RequestParam("consultantId") Long consultantId) {
+    public BigDecimal getGain(@RequestParam("userPhone") String userPhone) {
         // 根据顾问id获取到商品信息
-        List<Goods> goods = goodsService.selectGoodsByConsultantId(consultantId);
+        //List<Goods> goods = goodsService.selectGoodsByConsultantId(consultantId);
+        List<Goods> goods = goodsMapper.getAllGoodsInfoByParam(userPhone);
         // 定义总收益
         BigDecimal sum = new BigDecimal("0.00");
         // 循环查询出来的商品信息
         for (Goods good : goods) {
             // 获取到商品的投放总量
-            Long goodsTotalnum = good.getGoodsTotalnum();
+            Long goodsTotalnum = good.getGoodsTotalnum()-good.getGoodsRemainnum();
             // 获取到商品的补贴商家费用
             BigDecimal goodsPrice = good.getGoodsPrice();
-            // 计算出商家的总收益(总收益 = 商品的投放总量 * 商品的补贴商家费用)
+            // 计算出商家的总收益(总收益 = (商品的投放总量-商品核销量) * 商品的补贴商家费用))
             BigDecimal gain = BigDecimal.valueOf(goodsTotalnum).multiply(goodsPrice);
             // 累加总收益
             sum = sum.add(gain);
         }
         // 根据顾问id查询到商家信息
-        Shopper shopper = shopperService.selectShopperByConsultantId(consultantId);
-        // 将计算出来的商家总收益添加入库
-        shopper.setShopperGain(sum);
-        shopperService.updateShopper(shopper);
+        List<Shopper> shopper = shopperMapper.getShopperByPhone(userPhone);
+        for (Shopper s:
+             shopper) {
+            // 将计算出来的商家总收益添加入库
+            s.setShopperGain(sum);
+            shopperService.updateShopper(s);
+        }
         // 返回商家收益
         return sum;
     }

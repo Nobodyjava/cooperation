@@ -75,4 +75,11 @@ public interface GoodsMapper
 
     //更新商品剩余数量
     public int updateGoodsRemain(Goods goods);
+
+    /**
+     * 获取所有商品信息
+     * @param userPhone
+     * @return
+     */
+    public List getAllGoodsInfoByParam(String userPhone);
 }

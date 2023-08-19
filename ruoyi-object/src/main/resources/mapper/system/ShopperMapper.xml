@@ -110,4 +110,8 @@
         update shopper set shopper_gain = 0 where consultant_id = #{consultantId}
     </update>
 
+    <select id="getShopperByPhone" parameterType="String" resultMap="ShopperResult">
+        select * from shopper where account = #{userPhone}
+    </select>
+
 </mapper>

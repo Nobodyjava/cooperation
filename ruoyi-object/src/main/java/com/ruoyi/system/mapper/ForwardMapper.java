@@ -93,5 +93,17 @@ public interface ForwardMapper
      */
     public Forward selectCheckForward(Forward forward);
 
+    /**
+     * 根据活动id和openid获取核销码状态
+     * @param forward
+     * @return
+     */
+    public Forward getStatusByParam(Forward forward);
 
+    /**
+     * 获取所有核销明细
+     * @param userPhone
+     * @return
+     */
+    public List getAllValidInfo(String userPhone);
 }

@@ -139,8 +139,13 @@ public class ForwardServiceImpl implements IForwardService
      */
     @Override
     public int updateStatus(Forward forward) {
-        goodsService.updateGoodsRemainNum(forward.getActivityId());
-        return forwardMapper.updateStatus(forward);
+        Forward statusByParam = forwardMapper.getStatusByParam(forward);
+        if(statusByParam.getStatus() == 1){
+            return -1;
+        }else{
+            goodsService.updateGoodsRemainNum(forward.getActivityId());
+            return forwardMapper.updateStatus(forward);
+        }
     }
 
     /**
@@ -161,6 +166,11 @@ public class ForwardServiceImpl implements IForwardService
     @Override
     public Forward selectPhoneByAOpenId(Forward forward) {
         return forwardMapper.selectPhoneByAOpenId(forward);
+    }
+
+    @Override
+    public List getAllValidInfo(String userPhone) {
+        return forwardMapper.getAllValidInfo(userPhone);
     }
 
 

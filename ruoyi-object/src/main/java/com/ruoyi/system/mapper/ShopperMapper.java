@@ -84,4 +84,11 @@ public interface ShopperMapper
      */
     public int updateShopperGainByConsultantId(Long consultantId);
 
+    /**
+     * 根据手机号查询商家信息
+     * @param userPhone
+     * @return
+     */
+    public List getShopperByPhone(String userPhone);
+
 }

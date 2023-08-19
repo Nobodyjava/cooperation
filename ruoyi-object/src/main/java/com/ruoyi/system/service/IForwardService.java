@@ -87,4 +87,10 @@ public interface IForwardService
      */
     public Forward selectPhoneByAOpenId(Forward forward);
 
+    /**
+     * 获取所有核销明细
+     * @param userPhone
+     * @return
+     */
+    public List getAllValidInfo(String userPhone);
 }
