@@ -117,4 +117,9 @@ public class ShopperServiceImpl implements IShopperService {
     public int updateShopperGainByConsultantId(Long consultantId) {
         return shopperMapper.updateShopperGainByConsultantId(consultantId);
     }
+
+    @Override
+    public List<Shopper> getShopperByPhone(String userPhone) {
+        return shopperMapper.getShopperByPhone(userPhone);
+    }
 }

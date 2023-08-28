@@ -124,7 +124,7 @@ public class VerificationServiceImpl implements IVerificationService
         Consultant consultant = consultantMapper.selectConsultantByConsultantId(activity.getConsultantId());
         String consultantPhone = consultant.getConsultantPhone();
         System.out.println("查到的顾问手机号:" + consultantPhone);
-        return consultantPhone + ";" + validatedAccount;
+        return consultantPhone + ";" + validatedAccount+";"+shopper.getAccount();
     }
 }
 

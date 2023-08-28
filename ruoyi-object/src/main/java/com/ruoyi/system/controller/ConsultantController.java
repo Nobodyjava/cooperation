@@ -7,8 +7,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.system.domain.Manager;
+import com.ruoyi.system.domain.Shopper;
+import com.ruoyi.system.mapper.ShopperMapper;
 import com.ruoyi.system.service.IManagerService;
+import com.ruoyi.system.service.IShopperService;
 import com.ruoyi.system.utils.TokenGenerator;
+import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.core.controller.BaseController;
@@ -33,6 +37,9 @@ public class ConsultantController extends BaseController
 
     @Autowired
     private IManagerService managerService;
+
+    @Autowired
+    private IShopperService shopperService;
 
     /**
      * 查询顾问列表
@@ -148,13 +155,15 @@ public class ConsultantController extends BaseController
             //根据前端输入的手机号去查询数据库
             Consultant checkConsultant = consultantService.selectConsultantByConsultantPhone(phone);
             Manager checkManager = managerService.selectManagerByManagerPhone(phone);
+            List<Shopper> shopperByPhone = shopperService.getShopperByPhone(phone);
+            System.out.println("shopperByPhoneSize"+shopperByPhone.size());
             System.out.println(checkConsultant);
             System.out.println(checkManager);
             // 如果根据前端输入的联系电话没查询到相关信息，则提示该账号为空
-            if (checkConsultant == null && checkManager == null) {
+            if (checkConsultant == null && checkManager == null && shopperByPhone.size()==0) {
                 throw new ServletException("该账号为空,请重新输入!");
                 // 如果查询出来的顾问信息不为空,审核人信息为空
-            } else if (checkConsultant != null && checkManager == null) {
+            } else if (checkConsultant != null && checkManager == null && shopperByPhone.size()==0) {
                 if (password.equals(checkConsultant.getConsultantPassword())) {
                     // 添加顾问token进数据库
                     checkConsultant.setConsultantToken(token);
@@ -165,11 +174,21 @@ public class ConsultantController extends BaseController
                     return AjaxResult.error();
                 }
                 // 如果查询出来的顾问信息为空,审核人信息不为空
-            } else if (checkConsultant == null && checkManager != null) {
+            } else if (checkConsultant == null && checkManager != null && shopperByPhone.size()==0) {
                 if (password.equals(checkManager.getManagerPassword())) {
                     System.out.println("登录成功!");
                 } else {
                     System.out.println("密码错误!");
+                    return AjaxResult.error();
+                }
+            }else if(checkConsultant == null && checkManager == null && shopperByPhone.size()!=0){
+                Shopper shopper = shopperByPhone.get(0);
+                if(password.equals(shopper.getAccount())){
+                    System.out.println("登录成功");
+                    token = "abc";
+                    return AjaxResult.success(token,shopper);
+                }else{
+                    System.out.println("密码错误");
                     return AjaxResult.error();
                 }
             }

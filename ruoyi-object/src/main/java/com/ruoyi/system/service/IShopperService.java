@@ -81,4 +81,5 @@ public interface IShopperService
      */
     public int updateShopperGainByConsultantId(Long consultantId);
 
+    public List<Shopper> getShopperByPhone(String userPhone);
 }

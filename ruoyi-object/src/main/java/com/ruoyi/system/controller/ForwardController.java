@@ -175,7 +175,7 @@ public class ForwardController extends BaseController
         List<String> list = Arrays.asList(parts);
         System.out.println("sssssss"+list.contains(phone));
         if (list.contains(phone)) {
-            int i = forwardService.updateForward(forward);
+            int i = forwardService.updateStatus(forward);
             if(i == 1){
                 return AjaxResult.success(1);
             }else{
